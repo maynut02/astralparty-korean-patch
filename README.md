@@ -21,16 +21,16 @@
   <a href="https://astral.maynutlab.com/">
     <picture>
       <source
-        width="30%"
+        width="28%"
         srcset="./docs/img/downloads_links_1280x420.png"
         media="(prefers-color-scheme: dark)"
       />
       <source
-        width="30%"
+        width="28%"
         srcset="./docs/img/downloads_links_1280x420.png"
         media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
       />
-      <img width="30%" src="./docs/img/downloads_links_1280x420.png" />
+      <img width="28%" src="./docs/img/downloads_links_1280x420.png" />
     </picture>
   </a>
 
@@ -38,16 +38,16 @@
   <a href="https://github.com/maynut02/AstralAutoPatcher">
     <picture>
       <source
-        width="30%"
+        width="28%"
         srcset="./docs/img/autopatcher_links_1280x420.png"
         media="(prefers-color-scheme: dark)"
       />
       <source
-        width="30%"
+        width="28%"
         srcset="./docs/img/autopatcher_links_1280x420.png"
         media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
       />
-      <img width="30%" src="./docs/img/autopatcher_links_1280x420.png" />
+      <img width="28%" src="./docs/img/autopatcher_links_1280x420.png" />
     </picture>
   </a>
 
@@ -55,16 +55,16 @@
   <a href="https://astral.maynutlab.com/editor">
     <picture>
       <source
-        width="30%"
+        width="28%"
         srcset="./docs/img/editor_links_1280x420.png"
         media="(prefers-color-scheme: dark)"
       />
       <source
-        width="30%"
+        width="28%"
         srcset="./docs/img/editor_links_1280x420.png"
         media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
       />
-      <img width="30%" src="./docs/img/editor_links_1280x420.png" />
+      <img width="28%" src="./docs/img/editor_links_1280x420.png" />
     </picture>
   </a>
 </p>
