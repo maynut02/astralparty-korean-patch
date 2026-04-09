@@ -14,10 +14,63 @@
 
 <h1 align="center">아스트랄 파티 비공식 한글패치</h1>
 
-<p align="center">STAR ENGINE PROJECT가 제작한 대전형 카드 배틀 주사위 보드게임 Astral Party의 비공식 유저 한국어 패치입니다!</p>
+<p align="center">**STAR ENGINE PROJECT**가 개발한 대전형 카드 배틀 주사위 보드게임 **Astral Party**의 비공식 유저 한국어 패치입니다!</p>
+
+<p float="left" align="center">
+  <!-- downloads -->
+  <a href="https://astral.maynutlab.com/">
+    <picture>
+      <source
+        width="33%"
+        srcset="./docs/img/downloads_links_1280x420.png"
+        media="(prefers-color-scheme: dark)"
+      />
+      <source
+        width="33%"
+        srcset="./docs/img/downloads_links_1280x420.png"
+        media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
+      />
+      <img width="33%" src="./docs/img/downloads_links_1280x420.png" />
+    </picture>
+  </a>
+
+  <!-- autopatcher -->
+  <a href="https://github.com/maynut02/AstralAutoPatcher">
+    <picture>
+      <source
+        width="33%"
+        srcset="./docs/img/autopatcher_links_1280x420.png"
+        media="(prefers-color-scheme: dark)"
+      />
+      <source
+        width="33%"
+        srcset="./docs/img/autopatcher_links_1280x420.png"
+        media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
+      />
+      <img width="33%" src="./docs/img/autopatcher_links_1280x420.png" />
+    </picture>
+  </a>
+
+  <!-- editor -->
+  <a href="https://astral.maynutlab.com/editor">
+    <picture>
+      <source
+        width="33%"
+        srcset="./docs/img/editor_links_1280x420.png"
+        media="(prefers-color-scheme: dark)"
+      />
+      <source
+        width="33%"
+        srcset="./docs/img/editor_links_1280x420.png"
+        media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"
+      />
+      <img width="33%" src="./docs/img/editor_links_1280x420.png" />
+    </picture>
+  </a>
+</p>
 
 > [!TIP]
-> 누구나 [번역 에디터](astral.maynutlab.com/editor)로 번역에 참여하실 수 있습니다. 개선이 필요한 번역을 발견한다면 언제든지 의견을 남겨 주세요.
+> 누구나 [번역 에디터](astral.maynutlab.com/editor)를 통해 번역에 참여하실 수 있습니다. 개선이 필요한 번역을 발견한다면 언제든지 의견을 남겨 주세요.
 
 > [!WARNING]
 > **Pre-release** 버전에서는 일부 번역되지 않은 요소가 존재할 수 있습니다.
