@@ -13,8 +13,13 @@ def build_release_body(
     version: str,
     routes: dict,
     route_filter: str,
+    tag_suffix: str,
 ) -> str:
     lines: list[str] = []
+    if str(tag_suffix or '').strip() == '-pre':
+        lines.append('> [!WARNING]')
+        lines.append('> **Pre-release** 버전에서는 일부 번역되지 않은 요소가 존재할 수 있습니다.')
+        lines.append('')
     lines.append('### Release Date')
     lines.append(f'- {finished_at_kst}')
     lines.append('')
@@ -92,6 +97,7 @@ def main(argv: list[str] | None = None) -> int:
         version=version,
         routes=routes,
         route_filter=route_input,
+        tag_suffix=tag_suffix,
     )
 
     output_path = str(args.github_output).strip() or os.environ.get('GITHUB_OUTPUT', '')
