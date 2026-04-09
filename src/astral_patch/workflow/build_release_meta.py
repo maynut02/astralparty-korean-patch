@@ -43,6 +43,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description='Write release metadata(tag/title/body) to GITHUB_OUTPUT')
     parser.add_argument('--snapshot-file', required=True)
     parser.add_argument('--route', default='')
+    parser.add_argument('--tag-suffix', default='')
     parser.add_argument('--github-output', default='')
     args = parser.parse_args(argv)
 
@@ -82,7 +83,8 @@ def main(argv: list[str] | None = None) -> int:
     if not revision:
         raise SystemExit('failed to resolve revision from snapshot')
 
-    tag = f'v{version}.{revision}'
+    tag_suffix = str(args.tag_suffix or '').strip()
+    tag = f'v{version}.{revision}{tag_suffix}'
     kst = timezone(timedelta(hours=9))
     finished_at_kst = datetime.now(timezone.utc).astimezone(kst).strftime('%Y-%m-%d %H:%M:%S')
     body = build_release_body(

@@ -160,11 +160,9 @@ jobs:
           RELEASE_ID="$(gh api "repos/${REPO}/releases/tags/${TAG}" --jq '.id')"
           gh api --method PATCH "repos/${REPO}/releases/${RELEASE_ID}" -F prerelease=false -F draft=false >/dev/null
 
-          PRE_IDS="$(gh api "repos/${REPO}/releases/tags/${TAG}" --jq '.assets[] | select(.name | endswith("-pre.zip")) | .id' || true)"
-          if [ -n "${PRE_IDS}" ]; then
-            for aid in ${PRE_IDS}; do
-              gh api --method DELETE "repos/${REPO}/releases/assets/${aid}" >/dev/null || true
-            done
+          PRE_TAG="${TAG}-pre"
+          if gh release view "${PRE_TAG}" >/dev/null 2>&1; then
+            gh release delete "${PRE_TAG}" --yes
           fi
 
       - name: Delete run artifacts

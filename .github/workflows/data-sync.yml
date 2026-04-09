@@ -2,7 +2,7 @@ name: Data Sync
 
 on:
   schedule:
-    - cron: "0 * * * *"
+    - cron: "0/10 * * * *"
   workflow_dispatch:
     inputs:
       version:
@@ -540,9 +540,10 @@ jobs:
           set -euo pipefail
           astral-workflow build-release-meta \
             --snapshot-file state/get_report.json \
+            --tag-suffix=-pre \
             --github-output "$GITHUB_OUTPUT"
 
-      - name: Create or update GitHub Pre-release
+      - name: Create or update GitHub Release (pre)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
@@ -560,11 +561,11 @@ jobs:
             gh release upload "${TAG}" release_zips/*.zip --clobber
             gh release edit "${TAG}" --title "${TITLE}" --notes-file "${NOTES_FILE}" --target main
           else
-            gh release create "${TAG}" release_zips/*.zip --title "${TITLE}" --notes-file "${NOTES_FILE}" --target main --prerelease
+            gh release create "${TAG}" release_zips/*.zip --title "${TITLE}" --notes-file "${NOTES_FILE}" --target main
           fi
 
           RELEASE_ID="$(gh api "repos/${REPO}/releases/tags/${TAG}" --jq '.id')"
-          gh api --method PATCH "repos/${REPO}/releases/${RELEASE_ID}" -F prerelease=true -F draft=false >/dev/null
+          gh api --method PATCH "repos/${REPO}/releases/${RELEASE_ID}" -F prerelease=false -F draft=false >/dev/null
 
       - name: Delete run artifacts
         if: ${{ success() }}
