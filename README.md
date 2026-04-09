@@ -16,9 +16,9 @@
 
 <p align="center"><b>STAR ENGINE PROJECT</b>가 개발한 대전형 카드 배틀 주사위 보드게임 <b>Astral Party</b>의 비공식 유저 한국어 패치입니다!</p>
 
-<p float="left" align="center" style="padding: 6px 0;">
+<p float="left" align="center">
   <!-- downloads -->
-  <a href="https://astral.maynutlab.com/" style="text-decoration: none;">
+  <a href="https://astral.maynutlab.com/">
     <picture>
       <source
         width="30%"
@@ -35,7 +35,7 @@
   </a>
 
   <!-- autopatcher -->
-  <a href="https://github.com/maynut02/AstralAutoPatcher" style="text-decoration: none;">
+  <a href="https://github.com/maynut02/AstralAutoPatcher">
     <picture>
       <source
         width="30%"
@@ -52,7 +52,7 @@
   </a>
 
   <!-- editor -->
-  <a href="https://astral.maynutlab.com/editor" style="text-decoration: none;">
+  <a href="https://astral.maynutlab.com/editor">
     <picture>
       <source
         width="30%"
