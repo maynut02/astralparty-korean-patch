@@ -1,0 +1,1649 @@
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import struct
+from concurrent.futures import ThreadPoolExecutor, as_completed
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Any, Literal
+from xml.etree import ElementTree as ET
+
+from ..common.snapshot import (
+    find_bundle_name_in_report,
+    load_snapshot_payload,
+    resolve_route_scope,
+    resolve_snapshot_file,
+)
+from ..common.validate import validate_table_name
+from ..config import (
+    DEFAULT_GET_OUTPUT_DIR,
+    DEFAULT_PATCH_OUTPUT_DIR,
+    DEFAULT_SNAPSHOT_FILE,
+    FILES_KO_DIR,
+    FILES_ORIGIN_DIR,
+    LEGACY_SNAPSHOT_FILE,
+)
+from ..patch.rule_loader import available_rule_names, load_rule_payload
+from ..paths import resolve_repo_path
+
+try:
+    from dotenv import load_dotenv
+except ImportError:  # pragma: no cover
+    def load_dotenv() -> bool:
+        return False
+
+try:
+    import psycopg
+except ImportError:  # pragma: no cover
+    psycopg = None  # type: ignore[assignment]
+
+try:
+    import UnityPy
+except ImportError as exc:  # pragma: no cover
+    raise SystemExit(
+        "UnityPy is required. Install it with: pip install UnityPy pillow"
+    ) from exc
+
+try:
+    from PIL import Image
+except ImportError as exc:  # pragma: no cover
+    raise SystemExit(
+        "Pillow is required. Install it with: pip install pillow"
+    ) from exc
+
+AssetKind = Literal["font", "texture2d", "monobehaviour"]
+StrTargetField = Literal["cn_s", "en", "jp", "cn_t"]
+LANG_NAME_KEY_BY_TARGET: dict[str, int] = {"en": 1410, "jp": 1422, "cn_s": 1440, "cn_t": 1441}
+
+
+def _resolve_snapshot_file(path: Path) -> Path:
+    return resolve_snapshot_file(
+        path=path,
+        default_snapshot_file=DEFAULT_SNAPSHOT_FILE,
+        legacy_snapshot_file=LEGACY_SNAPSHOT_FILE,
+    )
+
+
+@dataclass
+class ReplaceRule:
+    asset_name: str
+    asset_kind: AssetKind
+    replacement: str
+    group: str
+
+
+@dataclass
+class PatchResult:
+    bundle_name: str
+    input_bundle_path: str
+    output_data_path: str
+    replaced_assets: list[str]
+    status: str
+    error: str
+
+
+@dataclass
+class LatestScope:
+    route: str
+    version: str
+    revision: str
+    report_path: Path
+    scope_dir: Path
+
+
+@dataclass
+class TaskPatchSpec:
+    action: str
+    asset_name: str
+    asset_kind: str
+    replace_file: str
+    asset_name_prefix: str
+    target: str
+    target_field: str
+
+
+@dataclass
+class TaskRule:
+    source: str
+    root_id: str
+    patches: list[TaskPatchSpec]
+
+
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description=(
+            "Patch bundles by rule-based replacement, XML ko overlay, and optional STR protobuf DB ko sync"
+        )
+    )
+    parser.add_argument("--route", default="", help="Route path segment, e.g. INT_STEAM. Omit to process all routes in rules/")
+    parser.add_argument("--version", default="", help="Optional version path segment, e.g. 3.0.1")
+    parser.add_argument("--revision", default="", help="Optional revision path segment, e.g. 926")
+    parser.add_argument(
+        "--input-root",
+        default=DEFAULT_GET_OUTPUT_DIR,
+        help="Base input root that contains route/version/revision folders",
+    )
+    parser.add_argument(
+        "--output-root",
+        default=DEFAULT_PATCH_OUTPUT_DIR,
+        help="Base output root for patched route/version/revision folders",
+    )
+    parser.add_argument(
+        "--files-dir",
+        default=FILES_KO_DIR.as_posix(),
+        help="Directory that contains replacement source files",
+    )
+    parser.add_argument(
+        "--origin-root",
+        default=FILES_ORIGIN_DIR.as_posix(),
+        help="Base root for manually collected route bundles (StandaloneWindows64)",
+    )
+
+    parser.add_argument(
+        "--lang-db-table",
+        default="lang_data",
+        help="DB table for ko lookup during TextAsset ko overlay",
+    )
+    parser.add_argument(
+        "--patch-textasset",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="Enable rules-defined TextAsset xml ko overlay",
+    )
+    parser.add_argument(
+        "--report-file",
+        default="",
+        help="Optional patch report path (JSON). Defaults to <output_dir>/patch_report.json",
+    )
+    parser.add_argument(
+        "--bundle",
+        action="append",
+        default=[],
+        help="Bundle filename filter (repeatable). If omitted, all *.bundle files are processed.",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action=argparse.BooleanOptionalAction,
+        default=False,
+        help="Analyze and patch in memory only, without writing __data files",
+    )
+    parser.add_argument(
+        "--snapshot-file",
+        default=DEFAULT_SNAPSHOT_FILE,
+        help="Snapshot metadata path generated by assets-get",
+    )
+    return parser.parse_args(argv)
+
+
+def _asset_name(asset: Any) -> str:
+    for field in ("m_Name", "name"):
+        value = getattr(asset, field, None)
+        if isinstance(value, str):
+            return value
+    return ""
+
+
+def _save_asset(asset: Any, obj: Any) -> None:
+    if hasattr(asset, "save"):
+        asset.save()
+        return
+    tree = obj.read_typetree()
+    obj.save_typetree(tree)
+
+
+def _decode_text_blob(blob: Any) -> str:
+    if isinstance(blob, str):
+        return blob
+    if isinstance(blob, (bytes, bytearray)):
+        raw = bytes(blob)
+        for encoding in ("utf-8-sig", "utf-8", "utf-16", "utf-16-le", "utf-16-be", "cp932", "gb18030"):
+            try:
+                return raw.decode(encoding)
+            except UnicodeDecodeError:
+                continue
+        return raw.decode("utf-8", errors="replace")
+    return str(blob)
+
+
+def _decode_binary_blob(value: Any) -> bytes:
+    if isinstance(value, (bytes, bytearray)):
+        return bytes(value)
+    if isinstance(value, str):
+        return value.encode("utf-8", "surrogateescape")
+    return bytes(value)
+
+
+def _rule_filename_for_route(route: str) -> str:
+    route_text = route.strip().lower()
+    if not route_text:
+        raise ValueError("Route must be non-empty")
+    return f"{route_text}.json"
+
+
+def _load_snapshot_payload(snapshot_file: Path) -> dict[str, Any]:
+    return load_snapshot_payload(snapshot_file)
+
+
+def _resolve_scope_from_snapshot(payload: dict[str, Any], route: str, snapshot_file: Path) -> tuple[str, str]:
+    return resolve_route_scope(payload, route, snapshot_file)
+
+
+def _discover_routes(
+    input_root: Path,
+    snapshot_payload: dict[str, Any] | None,
+    snapshot_file: Path,
+    version_override: str,
+    revision_override: str,
+) -> tuple[list[tuple[str, str, str]], list[str]]:
+    route_scopes: list[tuple[str, str, str]] = []
+    skipped: list[str] = []
+
+    for rule_name in available_rule_names():
+        route = rule_name.upper()
+
+        if version_override and revision_override:
+            version = version_override
+            revision = revision_override
+        else:
+            try:
+                if snapshot_payload is None:
+                    raise ValueError("snapshot payload is missing")
+                version, revision = _resolve_scope_from_snapshot(snapshot_payload, route, snapshot_file)
+            except Exception as exc:
+                skipped.append(f"{route} (snapshot: {exc})")
+                continue
+
+        input_scope_dir = input_root / route / version / revision
+        if input_scope_dir.exists():
+            route_scopes.append((route, version, revision))
+        else:
+            skipped.append(f"{route} ({version}/{revision} missing)")
+
+    return route_scopes, skipped
+
+
+def _read_rule_payload(route: str) -> dict[str, Any]:
+    payload = load_rule_payload(route)
+    if not isinstance(payload, dict):
+        raise ValueError("Rule JSON must be an object")
+    return payload
+
+
+def load_rules(route: str) -> list[ReplaceRule]:
+    payload = _read_rule_payload(route)
+    rules_raw = payload.get("rules", [])
+    if not isinstance(rules_raw, list):
+        raise ValueError("Rule JSON 'rules' must be a list")
+
+    rules: list[ReplaceRule] = []
+    for item in rules_raw:
+        if not isinstance(item, dict):
+            continue
+        asset_name = str(item.get("asset_name", "")).strip()
+        asset_kind = str(item.get("asset_kind", "")).strip().lower()
+        replacement = str(item.get("replacement", "")).strip()
+        group = str(item.get("group", "")).strip()
+        if not asset_name or asset_kind not in {"font", "texture2d", "monobehaviour"} or not replacement:
+            continue
+        rules.append(
+            ReplaceRule(
+                asset_name=asset_name,
+                asset_kind=asset_kind,  # type: ignore[arg-type]
+                replacement=replacement,
+                group=group,
+            )
+        )
+
+    return rules
+
+
+def _resolve_lang_textasset_name(payload: dict[str, Any]) -> str:
+    value = payload.get("lang_text")
+    if isinstance(value, str) and value.strip():
+        return value.strip()
+    raise ValueError("Rule JSON must include non-empty 'lang_text' for TextAsset overlay")
+
+
+def _resolve_str_target_field(payload: dict[str, Any]) -> StrTargetField | None:
+    value = payload.get("str_target")
+    if value is None:
+        return None
+    text = str(value).strip().lower()
+    if not text:
+        return None
+    if text not in {"cn_s", "en", "jp", "cn_t"}:
+        raise ValueError("Rule JSON 'str_target' must be one of: cn_s, en, jp, cn_t")
+    return text  # type: ignore[return-value]
+
+
+def _resolve_bundle_roots(payload: dict[str, Any]) -> dict[str, str]:
+    raw = payload.get("bundle_roots")
+    if raw is None:
+        return {}
+    if not isinstance(raw, dict):
+        raise ValueError("Rule JSON 'bundle_roots' must be an object")
+
+    mapping: dict[str, str] = {}
+    for key, value in raw.items():
+        key_text = str(key).strip()
+        value_text = str(value).strip()
+        if key_text and value_text:
+            mapping[key_text] = value_text
+    return mapping
+
+
+def _resolve_group_name(payload: dict[str, Any], field_name: str, default: str) -> str:
+    raw = payload.get(field_name)
+    if raw is None:
+        return default
+    text = str(raw).strip()
+    return text if text else default
+
+
+def _validate_table_name(table_name: str) -> str:
+    return validate_table_name(table_name)
+
+
+def _load_ko_map_from_lang_db(database_url: str, table_name: str) -> dict[str, str]:
+    if psycopg is None:
+        raise SystemExit("psycopg is required for DB ko lookup. Install with: pip install 'psycopg[binary]'")
+
+    sql = (
+        f"SELECT name, ko FROM {table_name} "
+        f"WHERE is_deleted = false AND ko IS NOT NULL AND btrim(ko) <> ''"
+    )
+
+    mapping: dict[str, str] = {}
+    with psycopg.connect(database_url) as conn:
+        with conn.cursor() as cur:
+            cur.execute(sql)
+            for row in cur.fetchall():
+                name = str(row[0] or "").strip()
+                ko = str(row[1] or "").strip()
+                if name and ko:
+                    mapping[name] = ko
+    return mapping
+
+
+def _read_varint(data: bytes, offset: int) -> tuple[int, int]:
+    value = 0
+    shift = 0
+    while True:
+        if offset >= len(data):
+            raise IndexError("Unexpected end while reading varint")
+        byte = data[offset]
+        offset += 1
+        value |= (byte & 0x7F) << shift
+        if not (byte & 0x80):
+            break
+        shift += 7
+    return value, offset
+
+
+def _write_varint(value: int) -> bytes:
+    if value < 0:
+        raise ValueError("varint value must be non-negative")
+    out = bytearray()
+    while True:
+        to_write = value & 0x7F
+        value >>= 7
+        if value:
+            out.append(to_write | 0x80)
+        else:
+            out.append(to_write)
+            break
+    return bytes(out)
+
+
+def _create_str_proto_entry(
+    entry_id: int,
+    cn_s: str,
+    en: str,
+    jp: str,
+    cn_t: str,
+    wrapper_field_num: int,
+) -> bytes:
+    payload = bytearray()
+    payload.append(0x0D)
+    payload.extend(struct.pack("<I", int(entry_id)))
+
+    def _normalize_text(value: str | None) -> str:
+        text = value or ""
+        return text.replace("\r\n", "\n").replace("\r", "\n")
+
+    def _add_string_field(target: bytearray, field_num: int, text: str | None) -> None:
+        normalized = _normalize_text(text)
+        encoded = normalized.encode("utf-8")
+        tag = (field_num << 3) | 2
+        target.extend(_write_varint(tag))
+        target.extend(_write_varint(len(encoded)))
+        target.extend(encoded)
+
+    if wrapper_field_num == 1:
+        _add_string_field(payload, 2, cn_s)
+        _add_string_field(payload, 3, en)
+        _add_string_field(payload, 4, jp)
+        _add_string_field(payload, 5, cn_t)
+    elif wrapper_field_num == 2:
+        inner = bytearray()
+        inner.append(0x0D)
+        inner.extend(struct.pack("<I", int(entry_id)))
+        _add_string_field(inner, 2, cn_s)
+        _add_string_field(inner, 3, en)
+        _add_string_field(inner, 4, jp)
+        _add_string_field(inner, 5, cn_t)
+
+        payload.extend(_write_varint(0x12))
+        payload.extend(_write_varint(len(inner)))
+        payload.extend(inner)
+    else:
+        raise ValueError(f"Unsupported wrapper_field_num: {wrapper_field_num}")
+
+    final_block = bytearray()
+    wrapper_tag = (wrapper_field_num << 3) | 2
+    final_block.extend(_write_varint(wrapper_tag))
+    final_block.extend(_write_varint(len(payload)))
+    final_block.extend(payload)
+    return bytes(final_block)
+
+
+def _parse_str_proto_entries(data: bytes) -> list[dict[str, Any]]:
+    entries_map: dict[int, dict[str, Any]] = {}
+    start_offset = -1
+
+    probe_limit = min(500, max(0, len(data) - 100))
+    for i in range(probe_limit):
+        if data[i] not in (0x0A, 0x12):
+            continue
+        try:
+            size_val, next_off = _read_varint(data, i + 1)
+        except Exception:
+            continue
+        if 0 < size_val < 5000 and next_off < len(data) and data[next_off] == 0x0D:
+            start_offset = i
+            break
+
+    if start_offset == -1:
+        return []
+
+    offset = start_offset
+    while offset < len(data):
+        try:
+            _, offset = _read_varint(data, offset)
+            length, offset = _read_varint(data, offset)
+        except Exception:
+            break
+
+        entry_end = offset + length
+        if entry_end > len(data):
+            break
+
+        entry_data: dict[str, Any] = {"id": 0, "cn_s": "", "en": "", "jp": "", "cn_t": ""}
+        curr = offset
+
+        while curr < entry_end:
+            try:
+                tag_value, next_offset = _read_varint(data, curr)
+            except Exception:
+                break
+            field_num = tag_value >> 3
+            wire_type = tag_value & 7
+            curr = next_offset
+
+            try:
+                if wire_type == 0:
+                    _, curr = _read_varint(data, curr)
+                elif wire_type == 1:
+                    curr += 8
+                elif wire_type == 5:
+                    val = struct.unpack("<I", data[curr:curr + 4])[0]
+                    curr += 4
+                    if field_num == 1:
+                        entry_data["id"] = int(val)
+                elif wire_type == 2:
+                    s_len, curr = _read_varint(data, curr)
+                    s_content = data[curr:curr + s_len]
+                    curr += s_len
+                    text = s_content.decode("utf-8")
+                    if field_num == 2:
+                        entry_data["cn_s"] = text
+                    elif field_num == 3:
+                        entry_data["en"] = text
+                    elif field_num == 4:
+                        entry_data["jp"] = text
+                    elif field_num == 5:
+                        entry_data["cn_t"] = text
+                else:
+                    break
+            except Exception:
+                break
+
+        entry_id = int(entry_data.get("id", 0))
+        if entry_id != 0 and entry_id not in entries_map:
+            entries_map[entry_id] = entry_data
+
+        offset = entry_end
+
+    return list(entries_map.values())
+
+
+def _encode_str_proto_entries(entries: list[dict[str, Any]]) -> bytes:
+    out = bytearray()
+
+    for item in entries:
+        entry_id = int(item.get("id", 0))
+        if entry_id == 0:
+            continue
+
+        body = bytearray()
+        body.append(0x0D)
+        body.extend(struct.pack("<I", entry_id))
+
+        for field_name, field_num in (("cn_s", 2), ("en", 3), ("jp", 4), ("cn_t", 5)):
+            text = str(item.get(field_name, "") or "")
+            text_bytes = text.encode("utf-8")
+            body.extend(_write_varint((field_num << 3) | 2))
+            body.extend(_write_varint(len(text_bytes)))
+            body.extend(text_bytes)
+
+        out.extend(_write_varint(0x0A))
+        out.extend(_write_varint(len(body)))
+        out.extend(body)
+
+    return bytes(out)
+
+
+def _replace_binary_object(obj: Any, target_name: str, payload: bytes) -> bool:
+    try:
+        asset = obj.read()
+    except Exception:
+        return False
+
+    if _asset_name(asset) != target_name:
+        return False
+
+    type_name = str(getattr(getattr(obj, "type", None), "name", "")).lower()
+    if type_name == "monobehaviour" and hasattr(obj, "set_raw_data"):
+        try:
+            obj.set_raw_data(payload)
+            return True
+        except Exception:
+            return False
+
+    for attr in ("m_FontData", "m_ScriptData", "m_Bytes", "bytes", "rawData", "m_RawData"):
+        if not hasattr(asset, attr):
+            continue
+        current = getattr(asset, attr)
+        if isinstance(current, (bytes, bytearray)):
+            try:
+                setattr(asset, attr, payload)
+                _save_asset(asset, obj)
+                return True
+            except Exception:
+                return False
+
+    try:
+        tree = obj.read_typetree()
+    except Exception:
+        return False
+
+    binary_keys = (
+        "m_FontData",
+        "m_ScriptData",
+        "m_Bytes",
+        "bytes",
+        "rawData",
+        "m_RawData",
+        "m_TextData",
+    )
+
+    for key in binary_keys:
+        if key not in tree:
+            continue
+        value = tree[key]
+        if isinstance(value, (bytes, bytearray)):
+            tree[key] = payload
+        elif isinstance(value, list) and (not value or isinstance(value[0], int)):
+            tree[key] = list(payload)
+        else:
+            continue
+
+        try:
+            obj.save_typetree(tree)
+            return True
+        except Exception:
+            return False
+
+    return False
+
+
+def _replace_texture_object(obj: Any, target_name: str, atlas_image: Any) -> bool:
+    asset = obj.read()
+    if _asset_name(asset) != target_name:
+        return False
+
+    if hasattr(asset, "set_image"):
+        asset.set_image(atlas_image.copy())
+        _save_asset(asset, obj)
+        return True
+
+    if hasattr(asset, "image"):
+        asset.image = atlas_image.copy()
+        _save_asset(asset, obj)
+        return True
+
+    return False
+
+
+def _replace_textasset_xml_with_ko(
+    obj: Any,
+    target_asset_name: str,
+    ko_map: dict[str, str],
+) -> tuple[bool, int]:
+    if not ko_map:
+        return False, 0
+
+    try:
+        asset = obj.read()
+    except Exception:
+        return False, 0
+
+    if _asset_name(asset) != target_asset_name:
+        return False, 0
+
+    raw_text = getattr(asset, "m_Script", None)
+    script_attr = "m_Script"
+    if raw_text is None and hasattr(asset, "script"):
+        raw_text = getattr(asset, "script")
+        script_attr = "script"
+    if raw_text is None:
+        return False, 0
+
+    xml_text = _decode_text_blob(raw_text)
+    try:
+        root = ET.fromstring(xml_text)
+    except ET.ParseError:
+        return False, 0
+
+    changed_count = 0
+    for elem in root.findall(".//string"):
+        key = (elem.attrib.get("name") or "").strip()
+        if not key:
+            continue
+        ko_value = ko_map.get(key)
+        if not ko_value:
+            continue
+
+        current_value = "".join(elem.itertext())
+        if current_value == ko_value:
+            continue
+
+        for child in list(elem):
+            elem.remove(child)
+        elem.text = ko_value
+        changed_count += 1
+
+    if changed_count == 0:
+        return False, 0
+
+    xml_bytes = ET.tostring(root, encoding="utf-8", xml_declaration=True)
+    replacement_value: Any
+    if isinstance(raw_text, (bytes, bytearray)):
+        replacement_value = xml_bytes
+    else:
+        replacement_value = xml_bytes.decode("utf-8")
+
+    try:
+        setattr(asset, script_attr, replacement_value)
+        _save_asset(asset, obj)
+        return True, changed_count
+    except Exception:
+        pass
+
+    try:
+        tree = obj.read_typetree()
+    except Exception:
+        return False, 0
+
+    if "m_Script" not in tree:
+        return False, 0
+
+    tree_value = tree["m_Script"]
+    if isinstance(tree_value, list):
+        tree["m_Script"] = list(xml_bytes)
+    elif isinstance(tree_value, (bytes, bytearray)):
+        tree["m_Script"] = xml_bytes
+    else:
+        tree["m_Script"] = xml_bytes.decode("utf-8")
+
+    try:
+        obj.save_typetree(tree)
+        return True, changed_count
+    except Exception:
+        return False, 0
+
+
+def _replace_str_textasset_with_db_ko(
+    obj: Any,
+    target_field: StrTargetField,
+    str_prefixes: list[str],
+    str_proto_map: dict[str, bytes],
+    str_ko_count_map: dict[str, int],
+) -> tuple[bool, int, str]:
+    try:
+        asset = obj.read()
+    except Exception:
+        return False, 0, ""
+
+    asset_name = _asset_name(asset).strip()
+    if not any(asset_name.startswith(prefix) for prefix in str_prefixes) or asset_name not in str_proto_map:
+        return False, 0, asset_name
+
+    raw_text = getattr(asset, "m_Script", None)
+    script_attr = "m_Script"
+    if raw_text is None and hasattr(asset, "script"):
+        raw_text = getattr(asset, "script")
+        script_attr = "script"
+    if raw_text is None:
+        return False, 0, asset_name
+
+    # Match build.py behavior: inject protobuf bytes via surrogateescape string.
+    payload = str_proto_map[asset_name].decode("utf-8", "surrogateescape")
+    changed = int(str_ko_count_map.get(asset_name, 0))
+
+    try:
+        setattr(asset, script_attr, payload)
+        _save_asset(asset, obj)
+        return True, changed, asset_name
+    except Exception:
+        return False, 0, asset_name
+
+
+def _find_latest_scope_for_route(input_root: Path, route: str) -> LatestScope:
+    route_root = input_root / route
+    if not route_root.exists():
+        raise FileNotFoundError(f"Route directory not found: {route_root}")
+
+    report_candidates = list(route_root.glob("*/*/report.json"))
+    if not report_candidates:
+        raise FileNotFoundError(f"No report.json found under: {route_root}")
+
+    latest_report = max(report_candidates, key=lambda p: p.stat().st_mtime)
+    latest_revision = latest_report.parent.name
+    latest_version = latest_report.parent.parent.name
+    return LatestScope(
+        route=route,
+        version=latest_version,
+        revision=latest_revision,
+        report_path=latest_report,
+        scope_dir=latest_report.parent,
+    )
+
+
+def _find_strcard_bundle_name(report_path: Path) -> str:
+    return find_bundle_name_in_report(
+        report_path,
+        asset_type="TextAsset",
+        asset_name="STRCard",
+        not_found_message="STRCard TextAsset bundle not found in latest INT_STEAM report",
+    )
+
+
+def _fetch_str_db_rows(
+    database_url: str,
+    categories: list[str],
+) -> dict[str, list[tuple[str, str, str, str, str, str]]]:
+    if not categories:
+        return {}
+
+    if psycopg is None:
+        raise SystemExit("psycopg is required for STR DB sync. Install with: pip install 'psycopg[binary]'")
+
+    sql = (
+        'SELECT category, "key", cn_s, en, jp, cn_t, ko '
+        'FROM astral_data '
+        'WHERE is_deleted = false AND category = ANY(%s)'
+        'ORDER BY category ASC, "key" ASC'
+    )
+
+    mapping: dict[str, list[tuple[str, str, str, str, str, str]]] = {name: [] for name in categories}
+    with psycopg.connect(database_url) as conn:
+        with conn.cursor() as cur:
+            cur.execute(sql, (categories,))
+            for row in cur.fetchall():
+                category = str(row[0] or "").strip()
+                entry_key = str(row[1] or "").strip()
+                cn_s = str(row[2] or "")
+                en = str(row[3] or "")
+                jp = str(row[4] or "")
+                cn_t = str(row[5] or "")
+                ko = str(row[6] or "")
+                if not category or not entry_key:
+                    continue
+                mapping.setdefault(category, []).append((entry_key, cn_s, en, jp, cn_t, ko))
+    return mapping
+
+
+def _build_localized_str_protobuf(
+    db_rows_by_category: dict[str, list[tuple[str, str, str, str, str, str]]],
+    target_field: StrTargetField,
+) -> tuple[dict[str, bytes], dict[str, int]]:
+    proto_map: dict[str, bytes] = {}
+    ko_count_map: dict[str, int] = {}
+
+    # STRSettings language selector label key for each target language.
+    # When patching that target, force visible name to "??볥럢??.
+    target_lang_key_id = LANG_NAME_KEY_BY_TARGET.get(target_field)
+
+    for category, rows in db_rows_by_category.items():
+        body = bytearray()
+        ko_applied = 0
+
+        for key_raw, cn_s, en, jp, cn_t, ko in rows:
+            try:
+                entry_id = int(str(key_raw).strip())
+            except Exception:
+                continue
+
+            ko_text = (ko or "").strip()
+            v_cn_s, v_en, v_jp, v_cn_t = cn_s, en, jp, cn_t
+
+            if ko_text:
+                if target_field == "cn_s":
+                    v_cn_s = ko_text
+                elif target_field == "en":
+                    v_en = ko_text
+                elif target_field == "jp":
+                    v_jp = ko_text
+                elif target_field == "cn_t":
+                    v_cn_t = ko_text
+                ko_applied += 1
+
+            # Special case: settings language label should display as "한국어".
+            if category == "STRSettings" and target_lang_key_id is not None and entry_id == target_lang_key_id:
+                if not (v_cn_s == "한국어" and v_en == "한국어" and v_jp == "한국어" and v_cn_t == "한국어"):
+                    ko_applied += 1
+                v_cn_s = v_en = v_jp = v_cn_t = "한국어"
+            body.extend(_create_str_proto_entry(entry_id, v_cn_s, v_en, v_jp, v_cn_t, 1))
+            body.extend(_create_str_proto_entry(entry_id, v_cn_s, v_en, v_jp, v_cn_t, 2))
+
+        if body:
+            proto_map[category] = bytes(body)
+            ko_count_map[category] = ko_applied
+
+    return proto_map, ko_count_map
+
+
+def patch_bundle(
+    bundle_path: Path,
+    output_scope_dir: Path,
+    bundle_roots: dict[str, str],
+    rules: list[ReplaceRule],
+    replacement_files: dict[str, bytes | Any],
+    dry_run: bool,
+    target_textasset_name: str,
+    ko_map: dict[str, str],
+    lang_group: str,
+    str_bundle_name: str,
+    str_group: str,
+    str_target_field: StrTargetField | None,
+    str_proto_map: dict[str, bytes],
+    str_ko_count_map: dict[str, int],
+    str_prefixes: list[str],
+) -> PatchResult:
+    result = PatchResult(
+        bundle_name=bundle_path.name,
+        input_bundle_path=bundle_path.as_posix(),
+        output_data_path="",
+        replaced_assets=[],
+        status="skipped",
+        error="",
+    )
+
+    remaining = {(rule.asset_kind, rule.asset_name): rule for rule in rules}
+    applied_groups: set[str] = set()
+
+    try:
+        env = UnityPy.load(str(bundle_path))
+
+        is_str_target_bundle = bool(str_target_field) and bundle_path.name == str_bundle_name
+
+        for obj in env.objects:
+            type_name = str(getattr(getattr(obj, "type", None), "name", "")).lower()
+
+            if type_name == "textasset" and target_textasset_name:
+                patched_textasset, changed_keys = _replace_textasset_xml_with_ko(obj, target_textasset_name, ko_map)
+                if patched_textasset:
+                    result.replaced_assets.append(f"{target_textasset_name} (ko:{changed_keys})")
+                    if lang_group:
+                        applied_groups.add(lang_group)
+
+            if type_name == "textasset" and is_str_target_bundle and str_target_field:
+                patched_str, changed_entries, str_name = _replace_str_textasset_with_db_ko(
+                    obj,
+                    str_target_field,
+                    str_prefixes,
+                    str_proto_map,
+                    str_ko_count_map,
+                )
+                if patched_str and str_name:
+                    result.replaced_assets.append(f"{str_name} ({str_target_field}:ko:{changed_entries})")
+                    if str_group:
+                        applied_groups.add(str_group)
+
+            if type_name in {"font", "monobehaviour"}:
+                for (kind, name), rule in list(remaining.items()):
+                    if type_name == "font" and kind != "font":
+                        continue
+                    if type_name == "monobehaviour" and kind != "monobehaviour":
+                        continue
+                    payload = replacement_files[rule.replacement]
+                    if isinstance(payload, bytes) and _replace_binary_object(obj, name, payload):
+                        result.replaced_assets.append(name)
+                        if rule.group:
+                            applied_groups.add(rule.group)
+                        del remaining[(kind, name)]
+
+            if type_name == "texture2d":
+                for (kind, name), rule in list(remaining.items()):
+                    if kind != "texture2d":
+                        continue
+                    payload = replacement_files[rule.replacement]
+                    if not isinstance(payload, bytes) and _replace_texture_object(obj, name, payload):
+                        result.replaced_assets.append(name)
+                        if rule.group:
+                            applied_groups.add(rule.group)
+                        del remaining[(kind, name)]
+
+            if not remaining and not (target_textasset_name and ko_map) and not is_str_target_bundle:
+                break
+
+        if not result.replaced_assets:
+            result.status = "skipped"
+            return result
+
+        result.status = "patched"
+        root_values: list[str] = []
+        for group_name in sorted(applied_groups):
+            root_hash = bundle_roots.get(group_name, "").strip()
+            if root_hash and root_hash not in root_values:
+                root_values.append(root_hash)
+
+        output_data_paths: list[Path] = []
+        if root_values:
+            for root_hash in root_values:
+                output_data_paths.append(output_scope_dir / root_hash / bundle_path.stem / "__data")
+        else:
+            output_data_paths.append(output_scope_dir / bundle_path.stem / "__data")
+
+        result.output_data_path = output_data_paths[0].as_posix() if output_data_paths else ""
+
+        if not dry_run:
+            output_bytes = env.file.save() if hasattr(env, "file") and env.file is not None else env.save()
+            for output_data_path in output_data_paths:
+                output_data_path.parent.mkdir(parents=True, exist_ok=True)
+                output_data_path.write_bytes(output_bytes)
+
+        return result
+    except Exception as exc:
+        result.status = "error"
+        result.error = str(exc)
+        return result
+
+
+def _normalize_task_source(raw: Any) -> str:
+    text = str(raw or "").strip().lower()
+    if text in {"assetbundles", "get"}:
+        return "AssetBundles"
+    if text in {"standalonewindows64", "origin_sw64", "origin"}:
+        return "StandaloneWindows64"
+    raise ValueError(f"Unsupported task source: {raw}")
+
+
+def _normalize_task_action(raw: Any) -> str:
+    text = str(raw or "").strip().lower()
+    if not text:
+        return "replace_file"
+    if text not in {"replace_file", "patch_str_from_db", "patch_lang_from_db"}:
+        raise ValueError(f"Unsupported patch action: {raw}")
+    return text
+
+
+def _normalize_asset_kind(raw: Any, action: str) -> str:
+    if action in {"patch_str_from_db", "patch_lang_from_db"}:
+        return "textasset"
+
+    text = str(raw or "").strip().lower()
+    if text not in {"font", "texture2d", "monobehaviour"}:
+        raise ValueError(f"Unsupported asset_kind for replace_file: {raw}")
+    return text
+
+
+def _normalize_str_target_field(raw: Any) -> str:
+    text = str(raw or "").strip().lower()
+    if text not in {"cn_s", "en", "jp", "cn_t"}:
+        raise ValueError("patch_str_from_db target_field must be one of: cn_s, en, jp, cn_t")
+    return text
+
+
+def _build_patch_spec(
+    item: dict[str, Any],
+    default_lang_text: str,
+    default_str_target: str,
+) -> TaskPatchSpec:
+    action = _normalize_task_action(item.get("action"))
+    asset_name = str(item.get("asset_name", "")).strip()
+    asset_name_prefix = str(item.get("asset_name_prefix", "")).strip()
+    target = str(item.get("target", "")).strip()
+
+    if action == "replace_file":
+        replace_file = str(item.get("replace_file") or item.get("replacement") or "").strip()
+        if not asset_name:
+            raise ValueError("replace_file action requires asset_name")
+        if not replace_file:
+            raise ValueError("replace_file action requires replace_file")
+        return TaskPatchSpec(
+            action=action,
+            asset_name=asset_name,
+            asset_kind=_normalize_asset_kind(item.get("asset_kind"), action),
+            replace_file=replace_file,
+            asset_name_prefix="",
+            target="",
+            target_field="",
+        )
+
+    if action == "patch_lang_from_db":
+        if not target:
+            target = asset_name or default_lang_text
+        if not target:
+            raise ValueError("patch_lang_from_db action requires target (or legacy asset_name/lang_text)")
+        return TaskPatchSpec(
+            action=action,
+            asset_name=target,
+            asset_kind="textasset",
+            replace_file="",
+            asset_name_prefix="",
+            target=target,
+            target_field="",
+        )
+
+    # patch_str_from_db
+    if not target:
+        target = asset_name_prefix or "STR"
+    target_field = str(item.get("target_field", "")).strip().lower()
+    if not target_field:
+        target_field = default_str_target
+    if not target_field:
+        raise ValueError("patch_str_from_db action requires target_field (or legacy str_target)")
+    target_field = _normalize_str_target_field(target_field)
+
+    return TaskPatchSpec(
+        action=action,
+        asset_name="",
+        asset_kind="textasset",
+        replace_file="",
+        asset_name_prefix=target,
+        target=target,
+        target_field=target_field,
+    )
+
+
+def _build_tasks_from_legacy_payload(payload: dict[str, Any], default_lang_text: str, default_str_target: str) -> list[TaskRule]:
+    bundle_roots = _resolve_bundle_roots(payload)
+    rules_raw = payload.get("rules", [])
+    if not isinstance(rules_raw, list):
+        rules_raw = []
+
+    grouped: dict[str, list[TaskPatchSpec]] = {}
+    for item in rules_raw:
+        if not isinstance(item, dict):
+            continue
+        try:
+            spec = _build_patch_spec(
+                {
+                    "action": "replace_file",
+                    "asset_name": item.get("asset_name", ""),
+                    "asset_kind": item.get("asset_kind", ""),
+                    "replace_file": item.get("replacement", ""),
+                },
+                default_lang_text,
+                default_str_target,
+            )
+        except Exception:
+            continue
+
+        group = str(item.get("group", "")).strip()
+        grouped.setdefault(group, []).append(spec)
+
+    tasks: list[TaskRule] = []
+    for group, specs in grouped.items():
+        tasks.append(
+            TaskRule(
+                source="AssetBundles",
+                root_id=bundle_roots.get(group, "").strip(),
+                patches=specs,
+            )
+        )
+
+    if default_lang_text:
+        tasks.append(
+            TaskRule(
+                source="AssetBundles",
+                root_id=bundle_roots.get("lang", "").strip(),
+                patches=[
+                    TaskPatchSpec(
+                        action="patch_lang_from_db",
+                        asset_name=default_lang_text,
+                        asset_kind="textasset",
+                        replace_file="",
+                        asset_name_prefix="",
+                        target=default_lang_text,
+                        target_field="",
+                    )
+                ],
+            )
+        )
+
+    if default_str_target:
+        tasks.append(
+            TaskRule(
+                source="AssetBundles",
+                root_id=bundle_roots.get("str", "").strip(),
+                patches=[
+                    TaskPatchSpec(
+                        action="patch_str_from_db",
+                        asset_name="",
+                        asset_kind="textasset",
+                        replace_file="",
+                        asset_name_prefix="STR",
+                        target="STR",
+                        target_field=default_str_target,
+                    )
+                ],
+            )
+        )
+
+    return tasks
+
+
+def _load_task_rules(payload: dict[str, Any]) -> list[TaskRule]:
+    default_lang_text = str(payload.get("lang_text", "")).strip()
+    default_str_target = str(payload.get("str_target", "")).strip().lower()
+    tasks_raw = payload.get("tasks")
+
+    if not isinstance(tasks_raw, list):
+        return _build_tasks_from_legacy_payload(payload, default_lang_text, default_str_target)
+
+    tasks: list[TaskRule] = []
+    for task_item in tasks_raw:
+        if not isinstance(task_item, dict):
+            continue
+        source = _normalize_task_source(task_item.get("source"))
+        root_id = str(task_item.get("root_id", "")).strip()
+        patches_raw = task_item.get("patches", [])
+        if not isinstance(patches_raw, list):
+            continue
+
+        patches: list[TaskPatchSpec] = []
+        for patch_item in patches_raw:
+            if not isinstance(patch_item, dict):
+                continue
+            patches.append(_build_patch_spec(patch_item, default_lang_text, default_str_target))
+
+        if patches:
+            tasks.append(TaskRule(source=source, root_id=root_id, patches=patches))
+
+    return tasks
+
+
+def _task_has_action(task: TaskRule, action: str) -> bool:
+    return any(spec.action == action for spec in task.patches)
+
+
+def _describe_task_skip_reason(task: TaskRule) -> str:
+    labels: list[str] = []
+    for spec in task.patches:
+        if spec.action == "replace_file":
+            name = spec.asset_name.strip() or "<unknown>"
+            labels.append(f"replace:{name}")
+            continue
+        if spec.action == "patch_lang_from_db":
+            target = (spec.target or spec.asset_name).strip() or "<unknown>"
+            labels.append(f"lang:{target}")
+            continue
+        if spec.action == "patch_str_from_db":
+            target = (spec.target or spec.asset_name_prefix or "STR").strip()
+            field = (spec.target_field or "?").strip()
+            labels.append(f"str:{target}:{field}")
+            continue
+        labels.append(spec.action)
+
+    unique_labels = sorted(set(labels))
+    return ", ".join(unique_labels) if unique_labels else "no_patches"
+
+
+def _collect_replace_files(tasks: list[TaskRule]) -> set[str]:
+    files: set[str] = set()
+    for task in tasks:
+        for patch in task.patches:
+            if patch.action == "replace_file" and patch.replace_file:
+                files.add(patch.replace_file)
+    return files
+
+
+def load_replacement_payloads(files_dir: Path, replace_files: set[str]) -> dict[str, bytes | Any]:
+    payloads: dict[str, bytes | Any] = {}
+    for filename in sorted(replace_files):
+        path = files_dir / filename
+        if not path.exists():
+            raise FileNotFoundError(f"Replacement file not found: {path}")
+
+        suffix = path.suffix.lower()
+        if suffix in {".png", ".jpg", ".jpeg", ".webp", ".tga", ".bmp"}:
+            payloads[filename] = Image.open(path)
+        else:
+            payloads[filename] = path.read_bytes()
+    return payloads
+
+
+def _source_input_dir(task: TaskRule, input_scope_dir: Path, origin_root: Path, route: str) -> Path:
+    if task.source == "AssetBundles":
+        return input_scope_dir
+
+    route_root = origin_root / route
+    nested_root = route_root / "StandaloneWindows64"
+
+    if route_root.exists():
+        # Prefer direct files_origin/<ROUTE>/*.bundle layout.
+        if any(route_root.glob("*.bundle")):
+            return route_root
+        if nested_root.exists():
+            return nested_root
+        return route_root
+
+    if nested_root.exists():
+        return nested_root
+
+    return route_root
+
+
+def _patch_bundle_for_task(
+    bundle_path: Path,
+    output_scope_dir: Path,
+    task: TaskRule,
+    replacement_files: dict[str, bytes | Any],
+    dry_run: bool,
+    ko_map: dict[str, str],
+    str_bundle_name: str,
+    str_target_field: StrTargetField | None,
+    str_proto_map: dict[str, bytes],
+    str_ko_count_map: dict[str, int],
+    str_prefixes: list[str],
+) -> PatchResult:
+    result = PatchResult(
+        bundle_name=bundle_path.name,
+        input_bundle_path=bundle_path.as_posix(),
+        output_data_path="",
+        replaced_assets=[],
+        status="skipped",
+        error="",
+    )
+
+    replace_specs = [spec for spec in task.patches if spec.action == "replace_file"]
+    lang_specs = [spec for spec in task.patches if spec.action == "patch_lang_from_db"]
+    str_specs = [spec for spec in task.patches if spec.action == "patch_str_from_db"]
+    has_str_action = bool(str_specs)
+    task_str_prefixes = sorted({(spec.target or spec.asset_name_prefix or "STR") for spec in str_specs})
+
+    remaining_replace: dict[tuple[str, str, str], TaskPatchSpec] = {
+        (spec.asset_kind, spec.asset_name, spec.replace_file): spec for spec in replace_specs
+    }
+
+    try:
+        env = UnityPy.load(str(bundle_path))
+        is_str_target_bundle = bool(str_target_field) and bundle_path.name == str_bundle_name
+        patched_lang_assets: set[str] = set()
+
+        for obj in env.objects:
+            type_name = str(getattr(getattr(obj, "type", None), "name", "")).lower()
+
+            if type_name == "textasset" and lang_specs and ko_map:
+                for spec in lang_specs:
+                    if spec.asset_name in patched_lang_assets:
+                        continue
+                    patched_textasset, changed_keys = _replace_textasset_xml_with_ko(obj, spec.asset_name, ko_map)
+                    if patched_textasset:
+                        result.replaced_assets.append(f"{spec.asset_name} (ko:{changed_keys})")
+                        patched_lang_assets.add(spec.asset_name)
+
+            if type_name == "textasset" and has_str_action and is_str_target_bundle and str_target_field:
+                patched_str, changed_entries, str_name = _replace_str_textasset_with_db_ko(
+                    obj,
+                    str_target_field,
+                    task_str_prefixes or str_prefixes,
+                    str_proto_map,
+                    str_ko_count_map,
+                )
+                if patched_str and str_name:
+                    result.replaced_assets.append(f"{str_name} ({str_target_field}:ko:{changed_entries})")
+
+            if type_name in {"font", "monobehaviour"}:
+                for key, spec in list(remaining_replace.items()):
+                    if spec.asset_kind != type_name:
+                        continue
+                    payload = replacement_files.get(spec.replace_file)
+                    if isinstance(payload, bytes) and _replace_binary_object(obj, spec.asset_name, payload):
+                        result.replaced_assets.append(spec.asset_name)
+                        del remaining_replace[key]
+
+            if type_name == "texture2d":
+                for key, spec in list(remaining_replace.items()):
+                    if spec.asset_kind != "texture2d":
+                        continue
+                    payload = replacement_files.get(spec.replace_file)
+                    if payload is not None and not isinstance(payload, bytes) and _replace_texture_object(obj, spec.asset_name, payload):
+                        result.replaced_assets.append(spec.asset_name)
+                        del remaining_replace[key]
+
+            if (
+                not remaining_replace
+                and not lang_specs
+                and not (has_str_action and is_str_target_bundle)
+            ):
+                break
+
+        if not result.replaced_assets:
+            result.status = "skipped"
+            return result
+
+        result.status = "patched"
+
+        if task.source == "AssetBundles":
+            source_base = output_scope_dir / task.source
+            if task.root_id:
+                source_base = source_base / task.root_id
+            output_path = source_base / bundle_path.stem / "__data"
+        else:
+            source_base = output_scope_dir / task.source
+            output_path = source_base / bundle_path.name
+
+        result.output_data_path = output_path.as_posix()
+
+        if not dry_run:
+            output_bytes = env.file.save() if hasattr(env, "file") and env.file is not None else env.save()
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path.write_bytes(output_bytes)
+
+        return result
+    except Exception as exc:
+        result.status = "error"
+        result.error = str(exc)
+        return result
+
+
+def _run_single_route(
+    args: argparse.Namespace,
+    route: str,
+    version: str,
+    revision: str,
+    scope_source: str,
+    snapshot_file: Path,
+) -> int:
+    input_root = Path(args.input_root)
+    input_scope_dir = input_root / route / version / revision
+    output_root = Path(args.output_root)
+    output_scope_dir = output_root / route / version / revision
+    files_dir = Path(args.files_dir)
+    origin_root = Path(getattr(args, "origin_root", "files_origin"))
+
+    payload = _read_rule_payload(route)
+    tasks = _load_task_rules(payload)
+    if not tasks:
+        raise SystemExit(f"No valid tasks in rule file for route: {route}")
+
+    needs_assetbundles = any(task.source == "AssetBundles" for task in tasks)
+    if needs_assetbundles and not input_scope_dir.exists():
+        raise SystemExit(f"Input directory not found: {input_scope_dir}")
+
+    replace_files = _collect_replace_files(tasks)
+    if replace_files and not files_dir.exists():
+        raise SystemExit(f"Files directory not found: {files_dir}")
+    replacement_payloads = load_replacement_payloads(files_dir, replace_files) if replace_files else {}
+
+    has_lang_task = any(_task_has_action(task, "patch_lang_from_db") for task in tasks)
+    has_str_task = any(_task_has_action(task, "patch_str_from_db") for task in tasks)
+
+    ko_map: dict[str, str] = {}
+    lang_ko_source = ""
+    if has_lang_task and bool(args.patch_textasset):
+        database_url_for_lang = os.getenv("DATABASE_URL", "").strip()
+        if not database_url_for_lang:
+            raise SystemExit("DATABASE_URL is required for lang TextAsset patching")
+
+        lang_db_table = _validate_table_name(str(args.lang_db_table or "lang_data"))
+        ko_map = _load_ko_map_from_lang_db(database_url_for_lang, lang_db_table)
+        lang_ko_source = f"db:{lang_db_table}"
+
+    str_target_field: StrTargetField | None = None
+    str_bundle_name = ""
+    str_bundle_path = Path()
+    str_proto_map: dict[str, bytes] = {}
+    str_ko_count_map: dict[str, int] = {}
+
+    str_prefixes: list[str] = ["STR"]
+    if has_str_task:
+        str_specs = [spec for task in tasks for spec in task.patches if spec.action == "patch_str_from_db"]
+        fields = sorted({str(spec.target_field or "").strip().lower() for spec in str_specs if str(spec.target_field or "").strip()})
+        if not fields:
+            raise SystemExit("patch_str_from_db action requires target_field")
+        if len(fields) != 1:
+            raise SystemExit(f"All patch_str_from_db actions must use same target_field. found={fields}")
+        field = fields[0]
+        if field not in {"cn_s", "en", "jp", "cn_t"}:
+            raise SystemExit(f"Invalid patch_str_from_db target_field: {field}")
+        str_target_field = field  # type: ignore[assignment]
+        str_prefixes = sorted({(spec.target or spec.asset_name_prefix or "STR") for spec in str_specs})
+        if not input_scope_dir.exists():
+            raise SystemExit(f"Input directory not found for STR task: {input_scope_dir}")
+
+        report_path = input_scope_dir / "report.json"
+        if not report_path.exists():
+            raise SystemExit(f"report.json not found for STR task scope: {report_path}")
+
+        str_bundle_name = _find_strcard_bundle_name(report_path)
+        str_bundle_path = input_scope_dir / str_bundle_name
+        if not str_bundle_path.exists():
+            raise SystemExit(f"STR target bundle not found: {str_bundle_path}")
+
+        database_url = os.getenv("DATABASE_URL", "").strip()
+        if not database_url:
+            raise SystemExit("DATABASE_URL is required for str_target patching")
+
+        env = UnityPy.load(str(str_bundle_path))
+        categories: list[str] = []
+        for obj in env.objects:
+            if getattr(getattr(obj, "type", None), "name", "") != "TextAsset":
+                continue
+            try:
+                asset = obj.read()
+            except Exception:
+                continue
+            name = _asset_name(asset)
+            if any(name.startswith(prefix) for prefix in str_prefixes):
+                categories.append(name)
+
+        unique_categories = sorted(set(categories))
+        db_rows_by_category = _fetch_str_db_rows(database_url, unique_categories)
+        str_proto_map, str_ko_count_map = _build_localized_str_protobuf(db_rows_by_category, str_target_field)
+
+    bundle_filters = {name.strip() for name in args.bundle if name.strip()}
+
+    results: list[PatchResult] = []
+    skipped_sources: list[str] = []
+
+    for task in tasks:
+        source_input_dir = _source_input_dir(task, input_scope_dir, origin_root, route)
+        if not source_input_dir.exists():
+            reason = _describe_task_skip_reason(task)
+            skipped_sources.append(f"{task.source}:{source_input_dir.as_posix()}(missing; reason={reason})")
+            continue
+
+        bundle_paths = sorted(source_input_dir.glob("*.bundle"))
+        if bundle_filters:
+            bundle_paths = [path for path in bundle_paths if path.name in bundle_filters]
+
+        if (
+            task.source == "AssetBundles"
+            and has_str_task
+            and _task_has_action(task, "patch_str_from_db")
+            and all(spec.action == "patch_str_from_db" for spec in task.patches)
+            and str_bundle_name
+        ):
+            specific_path = source_input_dir / str_bundle_name
+            bundle_paths = [specific_path] if specific_path.exists() else []
+
+        for bundle_path in bundle_paths:
+            result = _patch_bundle_for_task(
+                bundle_path=bundle_path,
+                output_scope_dir=output_scope_dir,
+                task=task,
+                replacement_files=replacement_payloads,
+                dry_run=bool(args.dry_run),
+                ko_map=ko_map,
+                str_bundle_name=str_bundle_name,
+                str_target_field=str_target_field,
+                str_proto_map=str_proto_map,
+                str_ko_count_map=str_ko_count_map,
+                str_prefixes=str_prefixes,
+            )
+            results.append(result)
+
+    patched = sum(1 for item in results if item.status == "patched")
+    skipped = sum(1 for item in results if item.status == "skipped")
+    errors = sum(1 for item in results if item.status == "error")
+
+    report_path = Path(args.report_file) if args.report_file else (output_scope_dir / "patch_report.json")
+    report_payload = {
+        "summary": {
+            "route": route,
+            "version": version,
+            "revision": revision,
+            "scope_source": scope_source,
+            "snapshot_file": snapshot_file.as_posix(),
+            "input_dir": input_scope_dir.as_posix(),
+            "origin_root": origin_root.as_posix(),
+            "output_dir": output_scope_dir.as_posix(),
+            "files_dir": files_dir.as_posix(),
+            "rule_file": _rule_filename_for_route(route),
+            "task_count": len(tasks),
+            "result_count": len(results),
+            "patched_count": patched,
+            "skipped_count": skipped,
+            "error_count": errors,
+            "dry_run": bool(args.dry_run),
+            "textasset_ko_entries": len(ko_map),
+            "textasset_ko_source": lang_ko_source,
+            "str_target": str_target_field or "",
+            "str_target_bundle": str_bundle_name,
+            "str_db_ko_entries": sum(str_ko_count_map.values()),
+            "skipped_sources": skipped_sources,
+        },
+        "results": [asdict(item) for item in results],
+    }
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    report_path.write_text(json.dumps(report_payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    print(
+        "[assets-patch] "
+        f"route={route} results={len(results)} patched={patched} skipped={skipped} errors={errors} "
+        f"report={report_path.as_posix()}"
+    )
+
+    return errors
+
+
+def main(argv: list[str] | None = None) -> int:
+    load_dotenv()
+    args = parse_args(argv)
+    args.input_root = resolve_repo_path(args.input_root).as_posix()
+    args.output_root = resolve_repo_path(args.output_root).as_posix()
+    args.files_dir = resolve_repo_path(args.files_dir).as_posix()
+    args.origin_root = resolve_repo_path(args.origin_root).as_posix()
+    args.snapshot_file = resolve_repo_path(args.snapshot_file).as_posix()
+    if str(args.report_file or "").strip():
+        args.report_file = resolve_repo_path(args.report_file).as_posix()
+
+    input_root = Path(args.input_root)
+    route_arg = args.route.strip()
+
+    version_arg = str(args.version or "").strip()
+    revision_arg = str(args.revision or "").strip()
+    if bool(version_arg) ^ bool(revision_arg):
+        raise SystemExit("--version and --revision must be provided together")
+
+    snapshot_file = _resolve_snapshot_file(Path(str(args.snapshot_file or DEFAULT_SNAPSHOT_FILE)))
+    snapshot_payload: dict[str, Any] | None = None
+    if not (version_arg and revision_arg):
+        snapshot_payload = _load_snapshot_payload(snapshot_file)
+
+    if route_arg:
+        route = route_arg.upper()
+        if version_arg and revision_arg:
+            version = version_arg
+            revision = revision_arg
+            scope_source = "cli"
+        else:
+            version, revision = _resolve_scope_from_snapshot(snapshot_payload or {}, route, snapshot_file)
+            scope_source = "snapshot"
+
+        return 1 if _run_single_route(args, route, version, revision, scope_source, snapshot_file) > 0 else 0
+
+    if args.report_file:
+        raise SystemExit("--report-file can only be used with --route")
+
+    route_scopes, skipped = _discover_routes(
+        input_root=input_root,
+        snapshot_payload=snapshot_payload,
+        snapshot_file=snapshot_file,
+        version_override=version_arg,
+        revision_override=revision_arg,
+    )
+    if not route_scopes:
+        raise SystemExit("No matching routes found from rules and snapshot/input scope")
+
+    if skipped:
+        print(f"[assets-patch] skipped routes: {', '.join(skipped)}")
+
+    max_workers = min(8, len(route_scopes))
+    total_errors = 0
+
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        future_to_scope = {
+            executor.submit(
+                _run_single_route,
+                args,
+                route,
+                version,
+                revision,
+                "cli" if (version_arg and revision_arg) else "snapshot",
+                snapshot_file,
+            ): (route, version, revision)
+            for route, version, revision in route_scopes
+        }
+        for future in as_completed(future_to_scope):
+            route, version, revision = future_to_scope[future]
+            try:
+                route_errors = future.result()
+                total_errors += route_errors
+            except Exception as exc:
+                total_errors += 1
+                print(f"[assets-patch] route={route} scope={version}/{revision} fatal error: {exc}")
+
+    print(f"[assets-patch] all-routes summary routes={len(route_scopes)} total_errors={total_errors}")
+    return 1 if total_errors > 0 else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

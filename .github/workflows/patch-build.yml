@@ -1,0 +1,177 @@
+name: Patch and Build
+
+on:
+  workflow_dispatch:
+    inputs:
+      route:
+        description: "Optional route (e.g. INT_STEAM). Leave empty to process all routes from rules/snapshot."
+        required: false
+        default: ""
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  patch:
+    name: Patch
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+    steps:
+      - name: Checkout code (main branch)
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Checkout data branch (workflow)
+        uses: actions/checkout@v5
+        with:
+          ref: workflow
+          path: workflow-data
+          fetch-depth: 1
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+
+      - name: Restore output_get/state from workflow branch
+        run: |
+          set -euo pipefail
+          rm -rf output_get state
+          mkdir -p output_get state
+          rsync -a workflow-data/output_get/ output_get/
+          rsync -a workflow-data/state/ state/
+
+      - name: Run assets-patch
+        run: |
+          set -euo pipefail
+          if [ -n "${{ inputs.route }}" ]; then
+            astral-patch patch --route "${{ inputs.route }}"
+          else
+            astral-patch patch
+          fi
+
+      - name: Upload patched data artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: patched-output
+          path: |
+            output_patch/
+            state/get_report.json
+          retention-days: 1
+          if-no-files-found: error
+
+  build:
+    name: Build and Upload
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: [patch]
+
+    steps:
+      - name: Checkout code (main branch)
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+
+      - name: Download patched data artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: patched-output
+          path: _incoming/patched
+
+      - name: Restore output_patch/state
+        run: |
+          set -euo pipefail
+          rm -rf output_patch state
+          mkdir -p output_patch state
+          rsync -a _incoming/patched/output_patch/ output_patch/
+          cp _incoming/patched/state/get_report.json state/get_report.json
+
+      - name: Build release zip files (official)
+        run: |
+          set -euo pipefail
+          if [ -n "${{ inputs.route }}" ]; then
+            astral-workflow build-patch-zips \
+              --snapshot-file state/get_report.json \
+              --output-root output_patch \
+              --zip-dir release_zips \
+              --route "${{ inputs.route }}"
+          else
+            astral-workflow build-patch-zips \
+              --snapshot-file state/get_report.json \
+              --output-root output_patch \
+              --zip-dir release_zips
+          fi
+
+      - name: Prepare release metadata
+        id: release_meta
+        run: |
+          set -euo pipefail
+          astral-workflow build-release-meta \
+            --snapshot-file state/get_report.json \
+            --route "${{ inputs.route }}" \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Create or update GitHub Release (official)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          TAG="${{ steps.release_meta.outputs.tag }}"
+          TITLE="${{ steps.release_meta.outputs.title }}"
+          NOTES_FILE="release_notes.txt"
+
+          cat > "${NOTES_FILE}" <<'EOF'
+          ${{ steps.release_meta.outputs.body }}
+          EOF
+
+          if gh release view "${TAG}" >/dev/null 2>&1; then
+            gh release upload "${TAG}" release_zips/*.zip --clobber
+            gh release edit "${TAG}" --title "${TITLE}" --notes-file "${NOTES_FILE}" --target main
+          else
+            gh release create "${TAG}" release_zips/*.zip --title "${TITLE}" --notes-file "${NOTES_FILE}" --target main
+          fi
+
+          RELEASE_ID="$(gh api "repos/${REPO}/releases/tags/${TAG}" --jq '.id')"
+          gh api --method PATCH "repos/${REPO}/releases/${RELEASE_ID}" -F prerelease=false -F draft=false >/dev/null
+
+          PRE_IDS="$(gh api "repos/${REPO}/releases/tags/${TAG}" --jq '.assets[] | select(.name | endswith("-pre.zip")) | .id' || true)"
+          if [ -n "${PRE_IDS}" ]; then
+            for aid in ${PRE_IDS}; do
+              gh api --method DELETE "repos/${REPO}/releases/assets/${aid}" >/dev/null || true
+            done
+          fi
+
+      - name: Delete run artifacts
+        if: ${{ success() }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          astral-workflow delete-run-artifacts \
+            --repo "${{ github.repository }}" \
+            --run-id "${{ github.run_id }}"

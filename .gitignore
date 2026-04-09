@@ -1,0 +1,16 @@
+.env
+
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+ruff_cache/
+
+tools/
+work/
+state/
+output_get/
+output_patch/
+output_lang/
+output_sync/
