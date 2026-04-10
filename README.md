@@ -79,15 +79,15 @@
 
 ## How to use
 
-### Steam 글로벌 버전
+#### Steam 글로벌 버전
 
 - 파일명: INT_STEAM
 
-### Android 일본 버전
+#### Android 일본 버전
 
 - 파일명: INT_ANDROID
 
-### BiliBili PC 버전
+#### BiliBili PC 버전
 
 - 파일명: CN_BILIBILI
 
