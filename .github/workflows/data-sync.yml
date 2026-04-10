@@ -430,7 +430,6 @@ jobs:
             --repo "${{ github.repository }}" \
             --run-id "${{ github.run_id }}"
 
-
   patch-prerelease:
     name: Patch (pre-release)
     if: ${{ needs.plan-shards.outputs.has_changes == 'true' }}
@@ -566,6 +565,13 @@ jobs:
 
           RELEASE_ID="$(gh api "repos/${REPO}/releases/tags/${TAG}" --jq '.id')"
           gh api --method PATCH "repos/${REPO}/releases/${RELEASE_ID}" -F prerelease=false -F draft=false >/dev/null
+
+      - name: Notify Discord (pre)
+        if: ${{ success() }}
+        uses: ./.github/actions/notify-discord-release
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          tag: ${{ steps.release_meta.outputs.tag }}
 
       - name: Delete run artifacts
         if: ${{ success() }}

@@ -165,6 +165,13 @@ jobs:
             gh release delete "${PRE_TAG}" --yes
           fi
 
+      - name: Notify Discord (official)
+        if: ${{ success() }}
+        uses: ./.github/actions/notify-discord-release
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          tag: ${{ steps.release_meta.outputs.tag }}
+
       - name: Delete run artifacts
         if: ${{ success() }}
         env:
