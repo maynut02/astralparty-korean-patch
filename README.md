@@ -18,6 +18,12 @@
 
 <div align="center">
   
+[![][discord-shield]][discord-link]
+
+</div>
+
+<div align="center">
+  
 [![][version-shield]][release-link]
 [![][ci-shield]][ci-link]
 [![][python-shield]][python-link]
@@ -128,9 +134,12 @@ astral-workflow build-patch-zips
 
 
 <!-- Link Definitions -->
+[discord-shield]: https://img.shields.io/badge/Discord-업데이트_알림_받기-ECF3FF?style=flat-square&logo=discord&logoColor=ffffff&labelColor=000000
+[discord-link]: https://discord.gg/khYThH3gPD
+
 [version-shield]: https://img.shields.io/github/v/release/maynut02/astralparty-korean-patch?style=flat-square&color=ECF3FF&labelColor=000000
 [release-link]: https://github.com/maynut02/astralparty-korean-patch/releases
-[python-shield]: https://img.shields.io/badge/python-3.1.2+-ECF3FF?style=flat-square&logo=python&logoColor=7dd8f8&labelColor=000000
+[python-shield]: https://img.shields.io/badge/python-3.1.2+-ECF3FF?style=flat-square&logo=python&logoColor=ffffff&labelColor=000000
 [python-link]: https://www.python.org/
 [ci-shield]: https://img.shields.io/github/actions/workflow/status/maynut02/astralparty-korean-patch/data-sync.yml?style=flat-square&color=ECF3FF&labelColor=000000
 [ci-link]: https://github.com/maynut02/astralparty-korean-patch/actions
