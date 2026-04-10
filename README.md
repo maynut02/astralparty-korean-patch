@@ -79,17 +79,11 @@
 
 ## How to use
 
-#### Steam 글로벌 버전
-
-- 파일명: INT_STEAM
-
-#### Android 일본 버전
-
-- 파일명: INT_ANDROID
-
-#### BiliBili PC 버전
-
-- 파일명: CN_BILIBILI
+|버전|파일명|적용 방법|비고|
+|----|-----|---------|----|
+|Steam 글로벌 버전|INT_STEAM|[적용 방법]()|[자동 패치 프로그램]()|
+|Android 일본 버전|INT_ANDROID|[적용 방법]()|
+|BiliBili PC 버전|CN_BILIBILI|[적용 방법]()|[자동 패치 프로그램]()|
 
 ## Current Progress
 - [x] Steam 글로벌 버전(INT_STEAM)
