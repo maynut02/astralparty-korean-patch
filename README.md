@@ -96,9 +96,9 @@
 
 |버전|파일명|적용 방법|비고|
 |----|-----|---------|----|
-|Steam 글로벌 버전|INT_STEAM|[적용 방법]()|[자동 패치 프로그램]()|
+|Steam 글로벌 버전|INT_STEAM|[적용 방법]()|[자동 패치 프로그램 지원](https://github.com/maynut02/AstralAutoPatcher)|
 |Android 일본 버전|INT_ANDROID|[적용 방법]()|
-|BiliBili PC 버전|CN_BILIBILI|[적용 방법]()|[자동 패치 프로그램]()|
+|BiliBili PC 버전|CN_BILIBILI|[적용 방법]()|[자동 패치 프로그램 지원](https://github.com/maynut02/AstralAutoPatcher)|
 
 ## 자동화
 
