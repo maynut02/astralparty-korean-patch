@@ -84,8 +84,8 @@ runs:
                     name: "자동 패치 모드 실행",
                     value: (
                       "-# ⓘ 프로그램이 설치된 상태에서만 사용 가능합니다.\n" +
-                      "[Steam 글로벌 버전](" + $autopatch_page_url + ")\n" +
-                      "[빌리빌리 PC 버전](" + $autopatch_page_url + ")"
+                      "[Steam 글로벌 버전](https://astral.maynutlab.com/autopatch/patch/INT_STEAM)\n" +
+                      "[빌리빌리 PC 버전](https://astral.maynutlab.com/autopatch/patch/CN_BILIBILI)"
                     )
                   },
                   {
