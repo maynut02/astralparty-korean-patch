@@ -119,7 +119,7 @@ astral-workflow build-patch-zips
 
 ### 자동화
 
-- [Data Sync](/.github/workflows/data-sync.yml) 작업은 Google Cloud Scheduler를 통해 10분마다 실행됩니다.
+- [Data Sync](/.github/workflows/data-sync.yml) 작업은 Google Cloud Scheduler를 통해 20분마다 실행됩니다. `*/20 * * * *`
 - 새로운 revision을 감지한 경우, 새로운 데이터를 DB에 업로드 한 다음, 기존 번역 데이터로 pre-release 한글패치를 배포합니다.
 - 번역 작업이 완료된 경우, [Patch and Build](/.github/workflows/patch-build.yml) 작업을 통해 정식 한글패치를 배포합니다.
 - [Actions 작업 결과](https://github.com/maynut02/astralparty-korean-patch/tree/workflow)
