@@ -70,7 +70,7 @@ runs:
           --arg timestamp "${TIMESTAMP}" \
           --arg description "${EMBED_DESCRIPTION}" \
           '{
-            content: "새로운 한글패치 버전이 등록되었습니다!\n`$tag`\n@everyone",
+            content: ("새로운 한글패치 버전이 등록되었습니다!\n`" + $tag + "`\n@everyone"),
             embeds: [
               {
                 description: $description,
