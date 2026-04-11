@@ -15,7 +15,7 @@ inputs:
   homepage_url:
     description: Homepage URL for download section
     required: false
-    default: https://astral.maynutlab.com/
+    default: https://astral.maynutlab.com/download
   autopatcher_url:
     description: Direct download URL for auto patcher program
     required: false
@@ -70,7 +70,7 @@ runs:
           --arg timestamp "${TIMESTAMP}" \
           --arg description "${EMBED_DESCRIPTION}" \
           '{
-            content: "🔔 새로운 버전이 등록되었습니다!\n@everyone",
+            content: "새로운 버전이 등록되었습니다!\n@everyone",
             embeds: [
               {
                 description: $description,
@@ -78,14 +78,14 @@ runs:
                 fields: [
                   {
                     name: "다운로드",
-                    value: ("[홈페이지](" + $homepage_url + ")")
+                    value: ("[다운로드 페이지](" + $homepage_url + ")")
                   },
                   {
-                    name: "자동 패치",
+                    name: "자동 패치 모드 실행",
                     value: (
-                      "[프로그램 다운로드](" + $autopatcher_url + ")\n" +
-                      "[Steam 글로벌 버전](" + $autopatch_page_url + ") | [BiliBili PC 버전](" + $autopatch_page_url + ")\n" +
                       "-# ⓘ 프로그램이 설치된 상태에서만 사용 가능합니다."
+                      "[Steam 글로벌 버전](" + $autopatch_page_url + ")"
+                      "[빌리빌리 PC 버전](" + $autopatch_page_url + ")\n" +
                     )
                   },
                   {
