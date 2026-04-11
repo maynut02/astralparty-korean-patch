@@ -12,15 +12,9 @@
   <img width="250" src="./docs/img/banner_1280x420.png" />
 </picture>
 
-<h1 align="center">아스트랄 파티 비공식 한글패치</h1>
+<h1 align="center">아스트랄 파티 한글패치</h1>
 
 <p align="center"><b>STAR ENGINE PROJECT</b>가 개발한 대전형 카드 배틀 주사위 보드게임 <b>Astral Party</b>의 비공식 유저 한국어 패치입니다!</p>
-
-<div align="center">
-  
-[![][discord-shield]][discord-link]
-
-</div>
 
 <div align="center">
   
@@ -28,6 +22,7 @@
 [![][ci-shield]][ci-link]
 [![][python-shield]][python-link]
 [![][steam-shield]][steam-link]
+[![][discord-shield]][discord-link]
 
 </div>
 
@@ -92,7 +87,7 @@
 > [!WARNING]
 > **Pre-release** 버전에서는 일부 번역되지 않은 요소가 존재할 수 있습니다.
 
-## 어떻게 적용하나요?
+## 지원 버전
 
 |버전|파일명|적용 방법|비고|
 |----|-----|---------|----|
@@ -100,12 +95,37 @@
 |Android 일본 버전|INT_ANDROID|[적용 방법]()|
 |BiliBili PC 버전|CN_BILIBILI|[적용 방법]()|[자동 패치 프로그램 지원](https://github.com/maynut02/AstralAutoPatcher)|
 
-## 자동화
+## 개발자용
+
+### 요구 사항
+
+- [Python 3.1.2+](https://www.python.org/)
+
+### 개발
+
+```bash
+# 설치
+python -m pip install -e .
+
+# 실행
+astral-patch get --version 3.0.1 --route INT_STEAM
+astral-patch lang
+astral-patch str
+astral-patch patch --route INT_STEAM
+
+# 빌드
+astral-workflow build-patch-zips
+```
+
+### 자동화
 
 - [Data Sync](/.github/workflows/data-sync.yml) 작업은 Google Cloud Scheduler를 통해 10분마다 실행됩니다.
+- 새로운 revision을 감지한 경우, 새로운 데이터를 DB에 업로드 한 다음, 기존 번역 데이터로 pre-release 한글패치를 배포합니다.
+- 번역 작업이 완료된 경우, [Patch and Build](/.github/workflows/patch-build.yml) 작업을 통해 정식 한글패치를 배포합니다.
 - [Actions 작업 결과](https://github.com/maynut02/astralparty-korean-patch/tree/workflow)
 
-## 개발 진행도
+
+### 진행도
 - [x] Steam 글로벌 버전(INT_STEAM)
 - [ ] Steam 중국 버전(CN_STEAM)
 - [x] Android 일본 버전(INT_ANDROID)
@@ -114,23 +134,21 @@
 - [ ] BiliBili Android 버전(?)
 - [ ] WeGame 버전(CN_WEGAME)
 
-## 개발자용
+## 감사의 말
 
-설치:
+### 오픈소스 라이브러리
+- [aelurum/AssetStudio](https://github.com/aelurum/AssetStudio) - bundle 언패킹
 
-```bash
-python -m pip install -e .
-```
+### 번역 지원
+- Sky
 
-실행:
+### 개발 지원
+- [koz39](https://github.com/KOZ39)
+- [playteddypicker](https://playteddypicker.rs/about)
 
-```bash
-astral-patch get --version 3.0.1 --route INT_STEAM
-astral-patch lang
-astral-patch str
-astral-patch patch --route INT_STEAM
-astral-workflow build-patch-zips
-```
+## 관련 프로젝트
+- [AstralAutoPatcher](https://github.com/maynut02/AstralAutoPatcher)
+- ~~[AstralParty-KoPatch](https://github.com/maynut02/AstralParty-KoPatch)~~ - 과거 한글패치 배포 저장소
 
 
 <!-- Link Definitions -->
@@ -143,5 +161,5 @@ astral-workflow build-patch-zips
 [python-link]: https://www.python.org/
 [ci-shield]: https://img.shields.io/github/actions/workflow/status/maynut02/astralparty-korean-patch/data-sync.yml?style=flat-square&color=ECF3FF&labelColor=000000
 [ci-link]: https://github.com/maynut02/astralparty-korean-patch/actions
-[steam-shield]: https://img.shields.io/badge/Astral_Party-ECF3FF?style=flat-square&logo=steam&logoColor=ffffff&labelColor=000000
+[steam-shield]: https://img.shields.io/badge/Steam-Astral_Party-ECF3FF?style=flat-square&logo=steam&logoColor=ffffff&labelColor=000000
 [steam-link]: https://store.steampowered.com/app/2622000/Astral_Party/
