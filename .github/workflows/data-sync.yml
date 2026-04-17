@@ -8,7 +8,7 @@ on:
       version:
         description: "Game version"
         required: false
-        default: "3.0.1"
+        default: "3.1.0"
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
@@ -29,7 +29,7 @@ jobs:
       has_changes: ${{ steps.plan.outputs.has_changes }}
       int_steam_changed: ${{ steps.plan.outputs.int_steam_changed }}
     env:
-      VERSION: ${{ github.event.inputs.version || '3.0.1' }}
+      VERSION: ${{ github.event.inputs.version }}
       ROUTES: "INT_STEAM,INT_ANDROID,CN_BILIBILI"
       PER_SHARD: "500"
       MAX_SHARDS: "20"
