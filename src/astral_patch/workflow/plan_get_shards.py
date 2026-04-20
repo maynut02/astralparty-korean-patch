@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from ._common import optional_repo_path, repo_path
+from ..config import HOTADDRESS_ROUTE_PARAM_BY_ROUTE
 
 
 HOST_BY_PREFIX = {
@@ -19,6 +20,10 @@ HOST_BY_PREFIX = {
     'CN_': 'se-web-cn.feimogames.com',
 }
 INTERNAL_PREFIX = '{App.WebServerConfig.Path}/'
+
+
+def resolve_hotaddress_route_param(route: str) -> str:
+    return HOTADDRESS_ROUTE_PARAM_BY_ROUTE.get(route, route)
 
 
 def utc_now_iso() -> str:
@@ -96,9 +101,10 @@ def main(argv: list[str] | None = None) -> int:
 
     for route in routes:
         host = resolve_host(route)
+        route_param = resolve_hotaddress_route_param(route)
         get_url = (
             f'http://{host}:7878/api/hotaddress/get'
-            f'?route={urllib.parse.quote(route)}&version={urllib.parse.quote(version)}'
+            f'?route={urllib.parse.quote(route_param)}&version={urllib.parse.quote(version)}'
         )
         get_payload = fetch_json(get_url)
         source_url = str(get_payload.get('sourceUrl', '')).rstrip('/')

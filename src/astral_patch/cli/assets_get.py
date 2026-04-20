@@ -25,6 +25,7 @@ from typing import Any
 from ..config import (
     DEFAULT_GET_OUTPUT_DIR,
     DEFAULT_SNAPSHOT_FILE,
+    HOTADDRESS_ROUTE_PARAM_BY_ROUTE,
     ROUTE_CHOICES,
     ROUTE_HOST_BY_PREFIX,
 )
@@ -308,6 +309,10 @@ def get_target_routes(route_arg: str) -> list[str]:
     return [route_upper]
 
 
+def resolve_hotaddress_route_param(route: str) -> str:
+    return HOTADDRESS_ROUTE_PARAM_BY_ROUTE.get(route, route)
+
+
 def build_hotaddress_get_url(route: str, version: str) -> str:
     host: str | None = None
     for prefix, mapped_host in ROUTE_HOST_BY_PREFIX.items():
@@ -318,7 +323,9 @@ def build_hotaddress_get_url(route: str, version: str) -> str:
     if host is None:
         raise ValueError(f"Unsupported route prefix for hotaddress host mapping: {route}")
 
-    return HOTADDRESS_PATH_TEMPLATE.format(host=host, route=route, version=version)
+    route_param = urllib.parse.quote(resolve_hotaddress_route_param(route), safe="")
+    version_param = urllib.parse.quote(version, safe="")
+    return HOTADDRESS_PATH_TEMPLATE.format(host=host, route=route_param, version=version_param)
 
 
 def cleanup_work_dir(work_dir: Path) -> bool:

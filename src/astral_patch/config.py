@@ -18,6 +18,9 @@ ROUTE_HOST_BY_PREFIX = {
     "INT_": "selist.feimogames.com",
     "CN_": "se-web-cn.feimogames.com",
 }
+HOTADDRESS_ROUTE_PARAM_BY_ROUTE = {
+    "CN_BILIBILI": "110001957",
+}
 
 FILES_KO_DIR = Path("files_ko")
 FILES_ORIGIN_DIR = Path("files_origin")
