@@ -432,7 +432,8 @@ jobs:
 
   patch-prerelease:
     name: Patch (pre-release)
-    if: ${{ needs.aggregate.result == 'success' && needs.finalize.result == 'success' }}
+    # Keep pre-release updates running even when upstream optional jobs like syncs are skipped.
+    if: ${{ always() && needs.aggregate.result == 'success' && needs.finalize.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
     needs: [plan-shards, aggregate, finalize]
@@ -488,7 +489,7 @@ jobs:
 
   build-prerelease:
     name: Build and Upload (pre-release)
-    if: ${{ needs.patch-prerelease.result == 'success' }}
+    if: ${{ always() && needs.patch-prerelease.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs: [patch-prerelease]
