@@ -99,7 +99,7 @@
 
 ### 요구 사항
 
-- [Python 3.1.2+](https://www.python.org/)
+- [Python 3.12+](https://www.python.org/)
 
 ### 개발
 
@@ -157,7 +157,7 @@ astral-workflow build-patch-zips
 
 [version-shield]: https://img.shields.io/github/v/release/maynut02/astralparty-korean-patch?style=flat-square&color=ECF3FF&labelColor=000000
 [release-link]: https://github.com/maynut02/astralparty-korean-patch/releases
-[python-shield]: https://img.shields.io/badge/python-3.1.2+-ECF3FF?style=flat-square&logo=python&logoColor=ffffff&labelColor=000000
+[python-shield]: https://img.shields.io/badge/python-3.12+-ECF3FF?style=flat-square&logo=python&logoColor=ffffff&labelColor=000000
 [python-link]: https://www.python.org/
 [ci-shield]: https://img.shields.io/github/actions/workflow/status/maynut02/astralparty-korean-patch/data-sync.yml?style=flat-square&color=ECF3FF&labelColor=000000
 [ci-link]: https://github.com/maynut02/astralparty-korean-patch/actions

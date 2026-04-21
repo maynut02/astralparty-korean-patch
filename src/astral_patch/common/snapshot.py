@@ -5,6 +5,22 @@ from pathlib import Path
 from typing import Any
 
 
+def _path_endswith(path: Path, suffix: Path) -> bool:
+    suffix_parts = suffix.parts
+    if not suffix_parts:
+        return False
+    if len(path.parts) < len(suffix_parts):
+        return False
+    return tuple(path.parts[-len(suffix_parts):]) == suffix_parts
+
+
+def _replace_path_suffix(path: Path, old_suffix: Path, new_suffix: Path) -> Path:
+    if not _path_endswith(path, old_suffix):
+        return new_suffix
+    prefix_parts = path.parts[:-len(old_suffix.parts)]
+    return Path(*prefix_parts) / new_suffix
+
+
 def resolve_snapshot_file(
     path: Path,
     default_snapshot_file: str,
@@ -14,8 +30,8 @@ def resolve_snapshot_file(
         return path
 
     default_path = Path(default_snapshot_file)
-    if path == default_path and legacy_snapshot_file:
-        legacy_path = Path(legacy_snapshot_file)
+    if legacy_snapshot_file and (path == default_path or _path_endswith(path, default_path)):
+        legacy_path = _replace_path_suffix(path, default_path, Path(legacy_snapshot_file))
         if legacy_path.exists():
             return legacy_path
 

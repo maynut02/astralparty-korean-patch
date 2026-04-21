@@ -17,6 +17,10 @@ permissions:
   contents: write
   actions: write
 
+concurrency:
+  group: ${{ github.repository }}-release-pipeline
+  cancel-in-progress: false
+
 jobs:
   plan-shards:
     name: Plan Shards
@@ -45,6 +49,8 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: pyproject.toml
 
       - name: Install dependencies
         run: |
@@ -104,6 +110,8 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: pyproject.toml
 
       - name: Install dependencies
         run: |
@@ -162,6 +170,8 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: pyproject.toml
 
       - name: Install dependencies
         run: |
@@ -252,6 +262,8 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: pyproject.toml
 
       - name: Install dependencies
         run: |
@@ -272,10 +284,10 @@ jobs:
           rsync -a _incoming/base/output_get/ output_get/
           cp _incoming/base/state/get_report.json state/get_report.json
 
-      - name: Run STR job
+      - name: Run sync job
         run: ${{ matrix.command }}
 
-      - name: Upload STR report artifact
+      - name: Upload sync report artifact
         uses: actions/upload-artifact@v6
         with:
           name: ${{ matrix.artifact_name }}
@@ -322,6 +334,8 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: pyproject.toml
 
       - name: Install dependencies
         run: |
@@ -430,13 +444,437 @@ jobs:
             --repo "${{ github.repository }}" \
             --run-id "${{ github.run_id }}"
 
-  patch-prerelease:
-    name: Patch (pre-release)
-    # Keep pre-release updates running even when upstream optional jobs like syncs are skipped.
-    if: ${{ always() && needs.aggregate.result == 'success' && needs.finalize.result == 'success' }}
+  recheck-shards:
+    name: Recheck Shards
+    if: ${{ always() && needs.finalize.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [plan-shards, aggregate, syncs, finalize]
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      version: ${{ steps.plan.outputs.version }}
+      route_meta: ${{ steps.plan.outputs.route_meta }}
+      has_changes: ${{ steps.plan.outputs.has_changes }}
+      int_steam_changed: ${{ steps.plan.outputs.int_steam_changed }}
+    env:
+      VERSION: ${{ needs.plan-shards.outputs.version }}
+      ROUTES: "INT_STEAM,INT_ANDROID,CN_BILIBILI"
+      PER_SHARD: "500"
+      MAX_SHARDS: "20"
+
+    steps:
+      - name: Checkout repository (main branch)
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: pyproject.toml
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+
+      - name: Load current workflow snapshot
+        run: |
+          set -euo pipefail
+          mkdir -p state
+          if git ls-remote --exit-code --heads origin workflow >/dev/null 2>&1; then
+            git fetch origin workflow --depth=1
+            git show origin/workflow:state/get_report.json > state/prev_get_report.json || true
+          fi
+
+      - name: Rebuild shard matrix
+        id: plan
+        run: |
+          astral-workflow plan-get-shards \
+            --version "${VERSION}" \
+            --routes "${ROUTES}" \
+            --per-shard "${PER_SHARD}" \
+            --max-shards "${MAX_SHARDS}" \
+            --previous-snapshot "state/prev_get_report.json" \
+            --check-output "state/get_check_refresh.json" \
+            --github-output "$GITHUB_OUTPUT"
+
+      - name: Upload refresh check artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: get-check-refresh
+          path: state/get_check_refresh.json
+          retention-days: 1
+          if-no-files-found: error
+
+  downloads-refresh:
+    name: recheck ${{ matrix.route }} [${{ matrix.shard_no }}/${{ matrix.shard_count }}]
+    if: ${{ needs.recheck-shards.outputs.has_changes == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    needs: [recheck-shards]
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.recheck-shards.outputs.matrix) }}
+      max-parallel: 20
+    env:
+      VERSION: ${{ needs.recheck-shards.outputs.version }}
+
+    steps:
+      - name: Checkout repository (main branch)
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: pyproject.toml
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+
+      - name: Run assets-get shard
+        run: |
+          astral-patch get \
+            --version "${VERSION}" \
+            --route "${{ matrix.route }}" \
+            --shard-count "${{ matrix.shard_count }}" \
+            --shard-index "${{ matrix.shard_index }}" \
+            --snapshot-file "state/get_report.refresh.${{ matrix.route }}.${{ matrix.shard_index }}.json"
+
+      - name: Prepare shard artifact
+        run: |
+          set -euo pipefail
+
+          SNAPSHOT_FILE="state/get_report.refresh.${{ matrix.route }}.${{ matrix.shard_index }}.json"
+
+          mkdir -p _artifact_refresh/route_output _artifact_refresh/state _artifact_refresh/reports
+          rsync -a "output_get/${{ matrix.route }}/" "_artifact_refresh/route_output/${{ matrix.route }}/"
+          cp "${SNAPSHOT_FILE}" "_artifact_refresh/state/"
+
+          astral-workflow extract-shard-report \
+            --snapshot-file "${SNAPSHOT_FILE}" \
+            --route "${{ matrix.route }}" \
+            --output-file "_artifact_refresh/reports/report.${{ matrix.route }}.${{ matrix.shard_index }}.json"
+
+      - name: Upload shard artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: get-refresh-${{ matrix.route }}-${{ matrix.shard_index }}
+          path: _artifact_refresh/
+          retention-days: 1
+          if-no-files-found: error
+
+  aggregate-refresh:
+    name: Aggregate (recheck)
+    if: ${{ needs.recheck-shards.outputs.has_changes == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 120
-    needs: [plan-shards, aggregate, finalize]
+    needs: [recheck-shards, downloads-refresh]
+    env:
+      VERSION: ${{ needs.recheck-shards.outputs.version }}
+
+    steps:
+      - name: Checkout repository (main branch)
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: pyproject.toml
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+
+      - name: Download refresh shard artifacts
+        uses: actions/download-artifact@v5
+        with:
+          pattern: get-refresh-*
+          merge-multiple: true
+          path: _incoming_refresh
+
+      - name: Restore previous workflow baseline
+        run: |
+          set -euo pipefail
+          rm -rf output_get state _previous
+          mkdir -p output_get state
+
+          if git ls-remote --exit-code --heads origin workflow >/dev/null 2>&1; then
+            git fetch origin workflow --depth=1
+            git worktree add --force --detach _previous origin/workflow
+
+            if [ -d _previous/output_get ]; then
+              rsync -a _previous/output_get/ output_get/
+            fi
+            if [ -f _previous/state/get_report.json ]; then
+              cp _previous/state/get_report.json state/base_get_report.json
+            fi
+
+            git worktree remove _previous --force
+          fi
+
+      - name: Rebuild output_get/state from artifacts
+        run: |
+          set -euo pipefail
+          rsync -a _incoming_refresh/route_output/ output_get/
+
+          astral-workflow merge-get-snapshots \
+            --input-dir _incoming_refresh/state \
+            --output-file state/get_report.json \
+            --version "${VERSION}" \
+            --base-file state/base_get_report.json
+
+          astral-workflow merge-get-reports \
+            --reports-dir _incoming_refresh/reports \
+            --output-root output_get
+
+      - name: Upload aggregated base data
+        uses: actions/upload-artifact@v6
+        with:
+          name: base-data-refresh
+          path: |
+            output_get/
+            state/get_report.json
+          retention-days: 1
+          if-no-files-found: error
+
+  syncs-refresh:
+    name: ${{ matrix.label }} (recheck)
+    if: ${{ needs.recheck-shards.outputs.has_changes == 'true' && needs.recheck-shards.outputs.int_steam_changed == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    needs: [recheck-shards, aggregate-refresh]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - label: Lang Sync
+            command: astral-patch lang
+            report_path: state/lang_report.json
+            artifact_name: lang-report-refresh
+          - label: STR Sync
+            command: astral-patch str
+            report_path: state/str_report.json
+            artifact_name: str-report-refresh
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+    steps:
+      - name: Checkout repository (main branch)
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: pyproject.toml
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+
+      - name: Download aggregated base data
+        uses: actions/download-artifact@v5
+        with:
+          name: base-data-refresh
+          path: _incoming/base
+
+      - name: Restore output_get/state
+        run: |
+          set -euo pipefail
+          rm -rf output_get state
+          mkdir -p output_get state
+          rsync -a _incoming/base/output_get/ output_get/
+          cp _incoming/base/state/get_report.json state/get_report.json
+
+      - name: Run sync job
+        run: ${{ matrix.command }}
+
+      - name: Upload sync report artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ matrix.artifact_name }}
+          path: ${{ matrix.report_path }}
+          retention-days: 1
+          if-no-files-found: error
+
+  finalize-refresh:
+    name: Commit workflow branch (recheck)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: [recheck-shards, aggregate-refresh, syncs-refresh]
+    if: ${{ always() && needs.recheck-shards.result == 'success' && (needs.aggregate-refresh.result == 'success' || needs.aggregate-refresh.result == 'skipped') && (needs.syncs-refresh.result == 'success' || needs.syncs-refresh.result == 'skipped') }}
+
+    steps:
+      - name: Checkout repository (main branch)
+        uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Download refresh check artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: get-check-refresh
+          path: _incoming/check
+
+      - name: Download aggregated base data
+        if: ${{ needs.recheck-shards.outputs.has_changes == 'true' }}
+        uses: actions/download-artifact@v5
+        with:
+          name: base-data-refresh
+          path: _incoming/base
+
+      - name: Download sync reports
+        if: ${{ needs.recheck-shards.outputs.has_changes == 'true' && needs.recheck-shards.outputs.int_steam_changed == 'true' }}
+        uses: actions/download-artifact@v5
+        with:
+          pattern: "*-report-refresh"
+          merge-multiple: true
+          path: _incoming/reports
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: pyproject.toml
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e .
+
+      - name: Prepare workflow data worktree
+        run: |
+          set -euo pipefail
+
+          rm -rf .workflow-data _wf_prev
+          mkdir -p _wf_prev
+
+          if git ls-remote --exit-code --heads origin workflow >/dev/null 2>&1; then
+            git fetch origin workflow
+            git worktree add --force .workflow-data origin/workflow
+          else
+            git worktree add --force -b workflow .workflow-data HEAD
+          fi
+
+          if [ -d .workflow-data/output_get ]; then
+            mkdir -p _wf_prev/output_get
+            rsync -a .workflow-data/output_get/ _wf_prev/output_get/
+          fi
+          if [ -d .workflow-data/state ]; then
+            mkdir -p _wf_prev/state
+            rsync -a .workflow-data/state/ _wf_prev/state/
+          fi
+          if [ -f .workflow-data/README.md ]; then
+            cp .workflow-data/README.md _wf_prev/README.md
+          fi
+
+          find .workflow-data -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+          mkdir -p .workflow-data/output_get .workflow-data/state
+
+          if [ -d _wf_prev/output_get ]; then
+            rsync -a _wf_prev/output_get/ .workflow-data/output_get/
+          fi
+          if [ -d _wf_prev/state ]; then
+            rsync -a _wf_prev/state/ .workflow-data/state/
+          fi
+          if [ -f _wf_prev/README.md ]; then
+            cp _wf_prev/README.md .workflow-data/README.md
+          fi
+
+      - name: Rebuild workflow data
+        run: |
+          set -euo pipefail
+
+          cp _incoming/check/get_check_refresh.json .workflow-data/state/get_check.json
+
+          if [ "${{ needs.recheck-shards.outputs.has_changes }}" = "true" ]; then
+            rm -rf .workflow-data/output_get
+            mkdir -p .workflow-data/output_get
+            rsync -a _incoming/base/output_get/ .workflow-data/output_get/
+            cp _incoming/base/state/get_report.json .workflow-data/state/get_report.json
+
+            if [ "${{ needs.recheck-shards.outputs.int_steam_changed }}" = "true" ]; then
+              cp .workflow-data/state/get_report.json .workflow-data/state/last_str_sync_report.json
+            fi
+          fi
+
+          if [ -f _incoming/reports/lang_report.json ]; then
+            cp _incoming/reports/lang_report.json .workflow-data/state/lang_report.json
+          fi
+          if [ -f _incoming/reports/str_report.json ]; then
+            cp _incoming/reports/str_report.json .workflow-data/state/str_report.json
+          fi
+
+      - name: Prune output_get history (keep 5 per route)
+        run: astral-workflow prune-output-get .workflow-data/output_get --keep 5
+
+      - name: Update README run summary
+        run: astral-workflow update-workflow-readme --workflow-root .workflow-data
+
+      - name: Validate workflow branch layout
+        run: astral-workflow validate-workflow-layout --workflow-root .workflow-data
+
+      - name: Commit and push workflow branch
+        run: |
+          set -euo pipefail
+
+          COMMIT_MSG="$(astral-workflow build-sync-commit-message --snapshot-file .workflow-data/state/get_report.json)"
+
+          cd .workflow-data
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add -A .
+
+          if git diff --cached --quiet; then
+            echo "No data changes to commit."
+            exit 0
+          fi
+
+          git commit -m "$COMMIT_MSG"
+          git push origin HEAD:workflow
+
+      - name: Delete run artifacts
+        if: ${{ success() }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          astral-workflow delete-run-artifacts \
+            --repo "${{ github.repository }}" \
+            --run-id "${{ github.run_id }}"
+
+  patch-prerelease:
+    name: Patch (pre-release)
+    # Run after the first finalize and a single late-revision recheck pass.
+    if: ${{ always() && needs.finalize.result == 'success' && needs.recheck-shards.result == 'success' && (needs.plan-shards.outputs.has_changes == 'true' || needs.recheck-shards.outputs.has_changes == 'true') && (needs.recheck-shards.outputs.has_changes != 'true' || (needs.aggregate-refresh.result == 'success' && (needs.syncs-refresh.result == 'success' || needs.syncs-refresh.result == 'skipped') && needs.finalize-refresh.result == 'success')) }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    needs: [plan-shards, aggregate, finalize, recheck-shards, aggregate-refresh, syncs-refresh, finalize-refresh]
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
@@ -458,6 +896,8 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: pyproject.toml
 
       - name: Install dependencies
         run: |
@@ -505,6 +945,8 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: pyproject.toml
 
       - name: Install dependencies
         run: |
