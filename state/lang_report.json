@@ -1,0 +1,36 @@
+{
+  "summary": {
+    "route": "INT_STEAM",
+    "version": "3.1.0",
+    "revision": "019",
+    "snapshot_file": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/state/get_report.json",
+    "input_dir": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.1.0/019",
+    "ko_source": "db:lang_data",
+    "bundle_count": 6,
+    "row_count": 1109,
+    "backfilled_ko_count": 1109,
+    "missing_ko_count": 0,
+    "db_sync_enabled": true,
+    "log_target_count": 0
+  },
+  "log_targets": {
+    "create": [],
+    "update": [],
+    "restore": [],
+    "delete": [],
+    "all": []
+  },
+  "db_apply": {
+    "enabled": true,
+    "applied": true,
+    "batch_id": "0de27b7f-b01f-4f7d-aa7e-08f6f8caed96",
+    "create_count": 0,
+    "update_count": 0,
+    "restore_count": 0,
+    "delete_count": 0,
+    "upsert_count": 0,
+    "log_count": 0,
+    "data_table": "lang_data",
+    "logs_table": "lang_logs"
+  }
+}

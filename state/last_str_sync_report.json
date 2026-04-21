@@ -1,0 +1,21 @@
+{
+  "generated_at": "2026-04-21T09:17:46Z",
+  "version": "3.1.0",
+  "routes": {
+    "CN_BILIBILI": {
+      "revision": "019",
+      "report_path": "output_get/CN_BILIBILI/3.1.0/019/report.json",
+      "failed_count": 0
+    },
+    "INT_ANDROID": {
+      "revision": "019",
+      "report_path": "output_get/INT_ANDROID/3.1.0/019/report.json",
+      "failed_count": 0
+    },
+    "INT_STEAM": {
+      "revision": "019",
+      "report_path": "output_get/INT_STEAM/3.1.0/019/report.json",
+      "failed_count": 0
+    }
+  }
+}

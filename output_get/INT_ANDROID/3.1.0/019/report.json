@@ -1,0 +1,85 @@
+{
+  "summary": {
+    "route": "INT_ANDROID",
+    "version": "3.1.0",
+    "source_revision": "019",
+    "run_at": "2026-04-21T09:15:08Z",
+    "source_url": "http://seresjp.feimogames.com/INT_ANDROID/3.1.0/019",
+    "current_bundle_count": 5158,
+    "added_bundle_count": 5158,
+    "processed_bundle_count": 5158,
+    "downloaded_bundle_count": 5151,
+    "exported_bundle_count": 5151,
+    "matched_asset_count": 10,
+    "shard_index": 0,
+    "shard_count": 11,
+    "failed_bundles": [],
+    "skipped_bundle_count": 7,
+    "warnings": [
+      "Bundles skipped by size limit: 1",
+      "Bundles skipped by size limit: 1",
+      "Bundles skipped by size limit: 1",
+      "Bundles skipped by size limit: 1",
+      "Bundles skipped by size limit: 1",
+      "Bundles skipped by size limit: 2"
+    ],
+    "interrupted": false,
+    "catalog_diff_enabled": false,
+    "copied_reported_bundle_count": 5,
+    "copied_reported_bundles_path": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_ANDROID/3.1.0/019",
+    "bundle_copy_errors": [],
+    "report_path": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_ANDROID/3.1.0/019/report.json"
+  },
+  "records": [
+    {
+      "asset_name": "STRCard",
+      "asset_type": "TextAsset",
+      "bundle_name": "30897443ed18d691b9a917e73368ed2e.bundle"
+    },
+    {
+      "asset_name": "Afacad-Regular",
+      "asset_type": "Font",
+      "bundle_name": "250cd4aa03f128ea9e2d66d8f2a55059.bundle"
+    },
+    {
+      "asset_name": "Afacad-Regular_TMP",
+      "asset_type": "MonoBehaviour",
+      "bundle_name": "250cd4aa03f128ea9e2d66d8f2a55059.bundle"
+    },
+    {
+      "asset_name": "Afacad-Regular_TMP Atlas",
+      "asset_type": "Texture2D",
+      "bundle_name": "250cd4aa03f128ea9e2d66d8f2a55059.bundle"
+    },
+    {
+      "asset_name": "Japanese",
+      "asset_type": "TextAsset",
+      "bundle_name": "3cd6aae6385b9c82c41bad9c0964e1a0.bundle"
+    },
+    {
+      "asset_name": "MochiyPopOne-Regular",
+      "asset_type": "Font",
+      "bundle_name": "4f243a69dbbe83d171aafc5b14b6bea9.bundle"
+    },
+    {
+      "asset_name": "MochiyPopOne-Regular_TMP",
+      "asset_type": "MonoBehaviour",
+      "bundle_name": "4f243a69dbbe83d171aafc5b14b6bea9.bundle"
+    },
+    {
+      "asset_name": "MochiyPopOne-Regular_TMP Atlas",
+      "asset_type": "Texture2D",
+      "bundle_name": "4f243a69dbbe83d171aafc5b14b6bea9.bundle"
+    },
+    {
+      "asset_name": "JingNanBoBoHei_TMP",
+      "asset_type": "MonoBehaviour",
+      "bundle_name": "78075de8fb0c3e6c7aea62d46c9d11f4.bundle"
+    },
+    {
+      "asset_name": "JingNanBoBoHei_TMP Atlas",
+      "asset_type": "Texture2D",
+      "bundle_name": "78075de8fb0c3e6c7aea62d46c9d11f4.bundle"
+    }
+  ]
+}

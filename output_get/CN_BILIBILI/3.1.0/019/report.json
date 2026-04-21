@@ -1,0 +1,50 @@
+{
+  "summary": {
+    "route": "CN_BILIBILI",
+    "version": "3.1.0",
+    "source_revision": "019",
+    "run_at": "2026-04-21T09:15:04Z",
+    "source_url": "http://serescn.feimogames.com/CN_BILIBILI/3.1.0/019",
+    "current_bundle_count": 469,
+    "added_bundle_count": 469,
+    "processed_bundle_count": 469,
+    "downloaded_bundle_count": 460,
+    "exported_bundle_count": 460,
+    "matched_asset_count": 4,
+    "shard_index": 0,
+    "shard_count": 1,
+    "failed_bundles": [],
+    "skipped_bundle_count": 9,
+    "warnings": [
+      "Bundles skipped by size limit: 9"
+    ],
+    "interrupted": false,
+    "catalog_diff_enabled": false,
+    "copied_reported_bundle_count": 3,
+    "copied_reported_bundles_path": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/CN_BILIBILI/3.1.0/019",
+    "bundle_copy_errors": [],
+    "report_path": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/CN_BILIBILI/3.1.0/019/report.json"
+  },
+  "records": [
+    {
+      "asset_name": "Simplified Chinese",
+      "asset_type": "TextAsset",
+      "bundle_name": "aa3e8080664b67929a3add2876d81672.bundle"
+    },
+    {
+      "asset_name": "STRCard",
+      "asset_type": "TextAsset",
+      "bundle_name": "f1ba114203375614da2f270862b49985.bundle"
+    },
+    {
+      "asset_name": "JingNanBoBoHei_TMP",
+      "asset_type": "MonoBehaviour",
+      "bundle_name": "f4bd577340243f8c29dbf170e0a1ddb7.bundle"
+    },
+    {
+      "asset_name": "JingNanBoBoHei_TMP Atlas",
+      "asset_type": "Texture2D",
+      "bundle_name": "f4bd577340243f8c29dbf170e0a1ddb7.bundle"
+    }
+  ]
+}

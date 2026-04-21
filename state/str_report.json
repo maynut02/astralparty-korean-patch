@@ -1,0 +1,40 @@
+{
+  "summary": {
+    "route": "INT_STEAM",
+    "version": "3.1.0",
+    "revision": "019",
+    "scope_source": "snapshot",
+    "snapshot_file": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/state/get_report.json",
+    "scope_dir": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.1.0/019",
+    "report_source": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.1.0/019/report.json",
+    "bundle_name": "30897443ed18d691b9a917e73368ed2e.bundle",
+    "bundle_path": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.1.0/019/30897443ed18d691b9a917e73368ed2e.bundle",
+    "asset_prefix": "STR",
+    "categories_count": 56,
+    "extracted_entry_count": 6360,
+    "db_row_count": 6360,
+    "missing_in_db_count": 0,
+    "db_only_count": 0,
+    "mismatch_row_count": 0,
+    "mismatch_field_count": 0,
+    "upload_db": true,
+    "data_table": "astral_data",
+    "logs_table": "astral_logs"
+  },
+  "comparison": {
+    "missing_in_db": [],
+    "db_only": [],
+    "mismatches": []
+  },
+  "db_apply": {
+    "enabled": true,
+    "asset_version": "3.1.0.019",
+    "create_count": 0,
+    "update_count": 0,
+    "delete_count": 0,
+    "applied": true,
+    "batch_id": "68a01b0e-0c2a-457e-b869-a101e38cf216",
+    "log_count": 0,
+    "upsert_count": 0
+  }
+}

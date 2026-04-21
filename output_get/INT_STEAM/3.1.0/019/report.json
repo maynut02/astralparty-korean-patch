@@ -1,0 +1,65 @@
+{
+  "summary": {
+    "route": "INT_STEAM",
+    "version": "3.1.0",
+    "source_revision": "019",
+    "run_at": "2026-04-21T09:15:07Z",
+    "source_url": "http://seresjp.feimogames.com/INT_STEAM/3.1.0/019",
+    "current_bundle_count": 126,
+    "added_bundle_count": 126,
+    "processed_bundle_count": 126,
+    "downloaded_bundle_count": 117,
+    "exported_bundle_count": 117,
+    "matched_asset_count": 7,
+    "shard_index": 0,
+    "shard_count": 1,
+    "failed_bundles": [],
+    "skipped_bundle_count": 9,
+    "warnings": [
+      "Bundles skipped by size limit: 9"
+    ],
+    "interrupted": false,
+    "catalog_diff_enabled": false,
+    "copied_reported_bundle_count": 6,
+    "copied_reported_bundles_path": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.1.0/019",
+    "bundle_copy_errors": [],
+    "report_path": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.1.0/019/report.json"
+  },
+  "records": [
+    {
+      "asset_name": "STRCard",
+      "asset_type": "TextAsset",
+      "bundle_name": "30897443ed18d691b9a917e73368ed2e.bundle"
+    },
+    {
+      "asset_name": "English",
+      "asset_type": "TextAsset",
+      "bundle_name": "43db3a3c0823ba6829aa84839a348105.bundle"
+    },
+    {
+      "asset_name": "Traditional Chinese",
+      "asset_type": "TextAsset",
+      "bundle_name": "4a2b4e4fbf9263eaed6629cb43dbf99c.bundle"
+    },
+    {
+      "asset_name": "JingNanBoBoHei_TMP",
+      "asset_type": "MonoBehaviour",
+      "bundle_name": "0ef624217f91101b6b1904313fbc5dbe.bundle"
+    },
+    {
+      "asset_name": "JingNanBoBoHei_TMP Atlas",
+      "asset_type": "Texture2D",
+      "bundle_name": "0ef624217f91101b6b1904313fbc5dbe.bundle"
+    },
+    {
+      "asset_name": "Japanese",
+      "asset_type": "TextAsset",
+      "bundle_name": "851bcc80782bc1713c995af941014521.bundle"
+    },
+    {
+      "asset_name": "Simplified Chinese",
+      "asset_type": "TextAsset",
+      "bundle_name": "aa3e8080664b67929a3add2876d81672.bundle"
+    }
+  ]
+}
