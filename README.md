@@ -1,12 +1,12 @@
 ## Latest Data Check
 ### Finished at
-- 2026-05-11 23:00:37
+- 2026-05-11 23:22:28
 ### Result
-- unchanged
+- changed
 
 ## Latest Data Sync
 ### Date
-- 2026-04-21 18:17:46
+- 2026-05-11 23:29:06
 
 ### Version
 |route|version|revision|report|
@@ -18,5 +18,5 @@
 ### Data Sync
 |type|batch_id|report|
 |----|--------|------|
-|Lang|0de27b7f-b01f-4f7d-aa7e-08f6f8caed96|[report](/state/lang_report.json)|
-|STR|68a01b0e-0c2a-457e-b869-a101e38cf216|[report](/state/str_report.json)|
+|Lang|0ef2fc02-7005-4c78-9466-63fd179b6cea|[report](/state/lang_report.json)|
+|STR|c8d966f7-4879-4a9a-b90d-d9e50fc93889|[report](/state/str_report.json)|
