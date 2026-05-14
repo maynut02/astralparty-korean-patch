@@ -24,3 +24,7 @@ HOTADDRESS_ROUTE_PARAM_BY_ROUTE = {
 
 FILES_KO_DIR = Path("files_ko")
 FILES_ORIGIN_DIR = Path("files_origin")
+
+# http://selist.feimogames.com:7878/api/hotaddress/get?route=INT_STEAM&version=3.1.0
+# http://selist.feimogames.com:7878/api/hotaddress/get?route=INT_ANDROID&version=3.1.0
+# http://se-web-cn.feimogames.com:7878/api/hotaddress/get?route=110001957&version=3.1.0
