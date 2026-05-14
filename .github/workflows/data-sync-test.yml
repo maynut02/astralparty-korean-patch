@@ -7,6 +7,14 @@ on:
         description: "Game version"
         required: false
         default: "3.1.0"
+      run_mode:
+        description: "How to decide whether to run downloads/sync/patch"
+        required: true
+        type: choice
+        default: "check_latest"
+        options:
+          - "check_latest"
+          - "run_all"
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
@@ -57,6 +65,7 @@ jobs:
           python -m pip install -e .
 
       - name: Load previous workflow snapshot
+        if: ${{ github.event.inputs.run_mode == 'check_latest' }}
         run: |
           set -euo pipefail
           mkdir -p state
@@ -64,6 +73,13 @@ jobs:
             git fetch origin workflow --depth=1
             git show origin/workflow:state/get_report.json > state/prev_get_report.json || true
           fi
+
+      - name: Force all routes as changed
+        if: ${{ github.event.inputs.run_mode == 'run_all' }}
+        run: |
+          set -euo pipefail
+          mkdir -p state
+          rm -f state/prev_get_report.json
 
       - name: Build shard matrix
         id: plan
