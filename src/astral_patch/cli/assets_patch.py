@@ -107,7 +107,6 @@ class TaskPatchSpec:
 @dataclass
 class TaskRule:
     source: str
-    root_id: str
     patches: list[TaskPatchSpec]
 
 
@@ -182,6 +181,28 @@ def _asset_name(asset: Any) -> str:
         value = getattr(asset, field, None)
         if isinstance(value, str):
             return value
+    return ""
+
+
+def _normalize_assetbundle_m_name(value: str) -> str:
+    normalized = value.strip().lower()
+    if normalized.endswith(".bundle"):
+        normalized = normalized[:-7]
+    return normalized
+
+
+def _extract_assetbundle_m_name(env: Any) -> str:
+    for obj in env.objects:
+        type_name = str(getattr(getattr(obj, "type", None), "name", ""))
+        if type_name != "AssetBundle":
+            continue
+        try:
+            asset = obj.read()
+        except Exception:
+            continue
+        value = getattr(asset, "m_Name", None)
+        if isinstance(value, str) and value.strip():
+            return _normalize_assetbundle_m_name(value)
     return ""
 
 
@@ -316,22 +337,6 @@ def _resolve_str_target_field(payload: dict[str, Any]) -> StrTargetField | None:
     if text not in {"cn_s", "en", "jp", "cn_t"}:
         raise ValueError("Rule JSON 'str_target' must be one of: cn_s, en, jp, cn_t")
     return text  # type: ignore[return-value]
-
-
-def _resolve_bundle_roots(payload: dict[str, Any]) -> dict[str, str]:
-    raw = payload.get("bundle_roots")
-    if raw is None:
-        return {}
-    if not isinstance(raw, dict):
-        raise ValueError("Rule JSON 'bundle_roots' must be an object")
-
-    mapping: dict[str, str] = {}
-    for key, value in raw.items():
-        key_text = str(key).strip()
-        value_text = str(value).strip()
-        if key_text and value_text:
-            mapping[key_text] = value_text
-    return mapping
 
 
 def _resolve_group_name(payload: dict[str, Any], field_name: str, default: str) -> str:
@@ -879,7 +884,6 @@ def _build_localized_str_protobuf(
 def patch_bundle(
     bundle_path: Path,
     output_scope_dir: Path,
-    bundle_roots: dict[str, str],
     rules: list[ReplaceRule],
     replacement_files: dict[str, bytes | Any],
     dry_run: bool,
@@ -907,6 +911,7 @@ def patch_bundle(
 
     try:
         env = UnityPy.load(str(bundle_path))
+        assetbundle_m_name = _extract_assetbundle_m_name(env)
 
         is_str_target_bundle = bool(str_target_field) and bundle_path.name == str_bundle_name
 
@@ -965,16 +970,9 @@ def patch_bundle(
             return result
 
         result.status = "patched"
-        root_values: list[str] = []
-        for group_name in sorted(applied_groups):
-            root_hash = bundle_roots.get(group_name, "").strip()
-            if root_hash and root_hash not in root_values:
-                root_values.append(root_hash)
-
         output_data_paths: list[Path] = []
-        if root_values:
-            for root_hash in root_values:
-                output_data_paths.append(output_scope_dir / root_hash / bundle_path.stem / "__data")
+        if assetbundle_m_name:
+            output_data_paths.append(output_scope_dir / assetbundle_m_name / bundle_path.stem / "__data")
         else:
             output_data_paths.append(output_scope_dir / bundle_path.stem / "__data")
 
@@ -1091,7 +1089,6 @@ def _build_patch_spec(
 
 
 def _build_tasks_from_legacy_payload(payload: dict[str, Any], default_lang_text: str, default_str_target: str) -> list[TaskRule]:
-    bundle_roots = _resolve_bundle_roots(payload)
     rules_raw = payload.get("rules", [])
     if not isinstance(rules_raw, list):
         rules_raw = []
@@ -1122,7 +1119,6 @@ def _build_tasks_from_legacy_payload(payload: dict[str, Any], default_lang_text:
         tasks.append(
             TaskRule(
                 source="AssetBundles",
-                root_id=bundle_roots.get(group, "").strip(),
                 patches=specs,
             )
         )
@@ -1131,7 +1127,6 @@ def _build_tasks_from_legacy_payload(payload: dict[str, Any], default_lang_text:
         tasks.append(
             TaskRule(
                 source="AssetBundles",
-                root_id=bundle_roots.get("lang", "").strip(),
                 patches=[
                     TaskPatchSpec(
                         action="patch_lang_from_db",
@@ -1150,7 +1145,6 @@ def _build_tasks_from_legacy_payload(payload: dict[str, Any], default_lang_text:
         tasks.append(
             TaskRule(
                 source="AssetBundles",
-                root_id=bundle_roots.get("str", "").strip(),
                 patches=[
                     TaskPatchSpec(
                         action="patch_str_from_db",
@@ -1181,7 +1175,6 @@ def _load_task_rules(payload: dict[str, Any]) -> list[TaskRule]:
         if not isinstance(task_item, dict):
             continue
         source = _normalize_task_source(task_item.get("source"))
-        root_id = str(task_item.get("root_id", "")).strip()
         patches_raw = task_item.get("patches", [])
         if not isinstance(patches_raw, list):
             continue
@@ -1193,7 +1186,7 @@ def _load_task_rules(payload: dict[str, Any]) -> list[TaskRule]:
             patches.append(_build_patch_spec(patch_item, default_lang_text, default_str_target))
 
         if patches:
-            tasks.append(TaskRule(source=source, root_id=root_id, patches=patches))
+            tasks.append(TaskRule(source=source, patches=patches))
 
     return tasks
 
@@ -1303,6 +1296,7 @@ def _patch_bundle_for_task(
 
     try:
         env = UnityPy.load(str(bundle_path))
+        assetbundle_m_name = _extract_assetbundle_m_name(env) if task.source == "AssetBundles" else ""
         is_str_target_bundle = bool(str_target_field) and bundle_path.name == str_bundle_name
         patched_lang_assets: set[str] = set()
 
@@ -1361,9 +1355,10 @@ def _patch_bundle_for_task(
         result.status = "patched"
 
         if task.source == "AssetBundles":
+            if not assetbundle_m_name:
+                raise ValueError(f"AssetBundle m_Name not found: {bundle_path}")
             source_base = output_scope_dir / task.source
-            if task.root_id:
-                source_base = source_base / task.root_id
+            source_base = source_base / assetbundle_m_name
             output_path = source_base / bundle_path.stem / "__data"
         else:
             source_base = output_scope_dir / task.source

@@ -3,7 +3,6 @@
   "tasks": [
     {
       "source": "AssetBundles",
-      "root_id": "f19f4b57e00618a092c8dfc8aeb8d2fa",
       "patches": [
         {
           "action": "patch_str_from_db",
@@ -14,7 +13,6 @@
     },
     {
       "source": "AssetBundles",
-      "root_id": "f138d1971657be74d0155ab4d3cae489",
       "patches": [
         {
           "action": "patch_lang_from_db",

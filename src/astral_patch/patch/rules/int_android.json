@@ -3,7 +3,6 @@
   "tasks": [
     {
       "source": "AssetBundles",
-      "root_id": "49f1d881fe50e1053d141aa4e4739324",
       "patches": [
         {
           "asset_kind": "MonoBehaviour",
@@ -27,7 +26,6 @@
     },
     {
       "source": "AssetBundles",
-      "root_id": "f19f4b57e00618a092c8dfc8aeb8d2fa",
       "patches": [
         {
           "action": "patch_str_from_db",
@@ -38,7 +36,6 @@
     },
     {
       "source": "AssetBundles",
-      "root_id": "9c2c156995397d00b52292463263f219",
       "patches": [
         {
           "action": "patch_lang_from_db",
