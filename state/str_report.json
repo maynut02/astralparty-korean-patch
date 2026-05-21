@@ -2,39 +2,1968 @@
   "summary": {
     "route": "INT_STEAM",
     "version": "3.1.0",
-    "revision": "019",
+    "revision": "032",
     "scope_source": "snapshot",
     "snapshot_file": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/state/get_report.json",
-    "scope_dir": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.1.0/019",
-    "report_source": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.1.0/019/report.json",
-    "bundle_name": "30897443ed18d691b9a917e73368ed2e.bundle",
-    "bundle_path": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.1.0/019/30897443ed18d691b9a917e73368ed2e.bundle",
+    "scope_dir": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.1.0/032",
+    "report_source": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.1.0/032/report.json",
+    "bundle_name": "b84ec8442dae2f4246b9dad47fb5d652.bundle",
+    "bundle_path": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.1.0/032/b84ec8442dae2f4246b9dad47fb5d652.bundle",
     "asset_prefix": "STR",
-    "categories_count": 56,
-    "extracted_entry_count": 6360,
+    "categories_count": 58,
+    "extracted_entry_count": 6651,
     "db_row_count": 6360,
-    "missing_in_db_count": 0,
+    "missing_in_db_count": 291,
     "db_only_count": 0,
-    "mismatch_row_count": 0,
-    "mismatch_field_count": 0,
+    "mismatch_row_count": 66,
+    "mismatch_field_count": 109,
     "upload_db": true,
     "data_table": "astral_data",
     "logs_table": "astral_logs"
   },
   "comparison": {
-    "missing_in_db": [],
+    "missing_in_db": [
+      {
+        "category": "STRSkin",
+        "id": 100125003
+      },
+      {
+        "category": "STRMutator",
+        "id": 100011
+      },
+      {
+        "category": "STRMutator",
+        "id": 100021
+      },
+      {
+        "category": "STRMutator",
+        "id": 100031
+      },
+      {
+        "category": "STRMutator",
+        "id": 100041
+      },
+      {
+        "category": "STRMutator",
+        "id": 100051
+      },
+      {
+        "category": "STRMutator",
+        "id": 100061
+      },
+      {
+        "category": "STRMutator",
+        "id": 100071
+      },
+      {
+        "category": "STRMutator",
+        "id": 100081
+      },
+      {
+        "category": "STRMutator",
+        "id": 100091
+      },
+      {
+        "category": "STRMutator",
+        "id": 100101
+      },
+      {
+        "category": "STRMutator",
+        "id": 100111
+      },
+      {
+        "category": "STRMutator",
+        "id": 100121
+      },
+      {
+        "category": "STRMutator",
+        "id": 100131
+      },
+      {
+        "category": "STRMutator",
+        "id": 100141
+      },
+      {
+        "category": "STRMutator",
+        "id": 100151
+      },
+      {
+        "category": "STRMutator",
+        "id": 1000101
+      },
+      {
+        "category": "STRMutator",
+        "id": 1000201
+      },
+      {
+        "category": "STRMutator",
+        "id": 1000301
+      },
+      {
+        "category": "STRMutator",
+        "id": 1000401
+      },
+      {
+        "category": "STRMutator",
+        "id": 1000501
+      },
+      {
+        "category": "STRMutator",
+        "id": 1000601
+      },
+      {
+        "category": "STRMutator",
+        "id": 1000701
+      },
+      {
+        "category": "STRMutator",
+        "id": 1000801
+      },
+      {
+        "category": "STRMutator",
+        "id": 1000901
+      },
+      {
+        "category": "STRMutator",
+        "id": 1001001
+      },
+      {
+        "category": "STRMutator",
+        "id": 1001101
+      },
+      {
+        "category": "STRMutator",
+        "id": 1001201
+      },
+      {
+        "category": "STRMutator",
+        "id": 1001301
+      },
+      {
+        "category": "STRMutator",
+        "id": 1001401
+      },
+      {
+        "category": "STRMutator",
+        "id": 1001501
+      },
+      {
+        "category": "STRMessage",
+        "id": 35
+      },
+      {
+        "category": "STRMessage",
+        "id": 1121
+      },
+      {
+        "category": "STRMessage",
+        "id": 1122
+      },
+      {
+        "category": "STRMessage",
+        "id": 1123
+      },
+      {
+        "category": "STRMessage",
+        "id": 1124
+      },
+      {
+        "category": "STRMessage",
+        "id": 1125
+      },
+      {
+        "category": "STRMessage",
+        "id": 1126
+      },
+      {
+        "category": "STRMessage",
+        "id": 1127
+      },
+      {
+        "category": "STRMessage",
+        "id": 11028
+      },
+      {
+        "category": "STRMessage",
+        "id": 11029
+      },
+      {
+        "category": "STRMessage",
+        "id": 8100701
+      },
+      {
+        "category": "STRMessage",
+        "id": 8100702
+      },
+      {
+        "category": "STRMessage",
+        "id": 8100703
+      },
+      {
+        "category": "STRRechargeStore",
+        "id": 270007
+      },
+      {
+        "category": "STRRechargeStore",
+        "id": 270008
+      },
+      {
+        "category": "STRRechargeStore",
+        "id": 270009
+      },
+      {
+        "category": "STRBuff",
+        "id": 105701011
+      },
+      {
+        "category": "STRBuff",
+        "id": 105911011
+      },
+      {
+        "category": "STRBuff",
+        "id": 3021402
+      },
+      {
+        "category": "STRBuff",
+        "id": 10570101
+      },
+      {
+        "category": "STRBuff",
+        "id": 10591101
+      },
+      {
+        "category": "STRSkill",
+        "id": 105701
+      },
+      {
+        "category": "STRSkill",
+        "id": 105801
+      },
+      {
+        "category": "STRSkill",
+        "id": 301030
+      },
+      {
+        "category": "STRSkill",
+        "id": 1057010
+      },
+      {
+        "category": "STRSkill",
+        "id": 1058010
+      },
+      {
+        "category": "STRSkill",
+        "id": 105811
+      },
+      {
+        "category": "STRSkill",
+        "id": 1058110
+      },
+      {
+        "category": "STRItem",
+        "id": 4030
+      },
+      {
+        "category": "STRItem",
+        "id": 70091
+      },
+      {
+        "category": "STRItem",
+        "id": 70092
+      },
+      {
+        "category": "STRItem",
+        "id": 70093
+      },
+      {
+        "category": "STRItem",
+        "id": 70094
+      },
+      {
+        "category": "STRItem",
+        "id": 70095
+      },
+      {
+        "category": "STRItem",
+        "id": 70894
+      },
+      {
+        "category": "STRItem",
+        "id": 71085
+      },
+      {
+        "category": "STRItem",
+        "id": 71086
+      },
+      {
+        "category": "STRItem",
+        "id": 71087
+      },
+      {
+        "category": "STRItem",
+        "id": 71088
+      },
+      {
+        "category": "STRItem",
+        "id": 71989
+      },
+      {
+        "category": "STRItem",
+        "id": 75065
+      },
+      {
+        "category": "STRItem",
+        "id": 75066
+      },
+      {
+        "category": "STRItem",
+        "id": 75067
+      },
+      {
+        "category": "STRItem",
+        "id": 76001
+      },
+      {
+        "category": "STRItem",
+        "id": 76002
+      },
+      {
+        "category": "STRItem",
+        "id": 76101
+      },
+      {
+        "category": "STRItem",
+        "id": 76102
+      },
+      {
+        "category": "STRItem",
+        "id": 76103
+      },
+      {
+        "category": "STRItem",
+        "id": 76104
+      },
+      {
+        "category": "STRItem",
+        "id": 76105
+      },
+      {
+        "category": "STRItem",
+        "id": 76106
+      },
+      {
+        "category": "STRItem",
+        "id": 76107
+      },
+      {
+        "category": "STRItem",
+        "id": 76108
+      },
+      {
+        "category": "STRItem",
+        "id": 76109
+      },
+      {
+        "category": "STRItem",
+        "id": 76110
+      },
+      {
+        "category": "STRItem",
+        "id": 76111
+      },
+      {
+        "category": "STRItem",
+        "id": 76112
+      },
+      {
+        "category": "STRItem",
+        "id": 76113
+      },
+      {
+        "category": "STRItem",
+        "id": 76114
+      },
+      {
+        "category": "STRItem",
+        "id": 76115
+      },
+      {
+        "category": "STRItem",
+        "id": 76116
+      },
+      {
+        "category": "STRItem",
+        "id": 76117
+      },
+      {
+        "category": "STRItem",
+        "id": 76118
+      },
+      {
+        "category": "STRItem",
+        "id": 76119
+      },
+      {
+        "category": "STRItem",
+        "id": 76120
+      },
+      {
+        "category": "STRItem",
+        "id": 76121
+      },
+      {
+        "category": "STRItem",
+        "id": 76122
+      },
+      {
+        "category": "STRItem",
+        "id": 76123
+      },
+      {
+        "category": "STRItem",
+        "id": 76124
+      },
+      {
+        "category": "STRItem",
+        "id": 76125
+      },
+      {
+        "category": "STRItem",
+        "id": 76126
+      },
+      {
+        "category": "STRItem",
+        "id": 76127
+      },
+      {
+        "category": "STRItem",
+        "id": 76128
+      },
+      {
+        "category": "STRItem",
+        "id": 91106
+      },
+      {
+        "category": "STRItem",
+        "id": 91107
+      },
+      {
+        "category": "STRItem",
+        "id": 91108
+      },
+      {
+        "category": "STRItem",
+        "id": 91109
+      },
+      {
+        "category": "STRItem",
+        "id": 91110
+      },
+      {
+        "category": "STRItem",
+        "id": 1000051
+      },
+      {
+        "category": "STRItem",
+        "id": 1000052
+      },
+      {
+        "category": "STRItem",
+        "id": 100125003
+      },
+      {
+        "category": "STRItem",
+        "id": 100301003
+      },
+      {
+        "category": "STRItem",
+        "id": 100301004
+      },
+      {
+        "category": "STRItem",
+        "id": 120125009
+      },
+      {
+        "category": "STRItem",
+        "id": 120125010
+      },
+      {
+        "category": "STRItem",
+        "id": 120125011
+      },
+      {
+        "category": "STRItem",
+        "id": 120125012
+      },
+      {
+        "category": "STRItem",
+        "id": 700910
+      },
+      {
+        "category": "STRItem",
+        "id": 700920
+      },
+      {
+        "category": "STRItem",
+        "id": 700930
+      },
+      {
+        "category": "STRItem",
+        "id": 700940
+      },
+      {
+        "category": "STRItem",
+        "id": 700950
+      },
+      {
+        "category": "STRItem",
+        "id": 708940
+      },
+      {
+        "category": "STRItem",
+        "id": 719890
+      },
+      {
+        "category": "STRItem",
+        "id": 750650
+      },
+      {
+        "category": "STRItem",
+        "id": 750660
+      },
+      {
+        "category": "STRItem",
+        "id": 750670
+      },
+      {
+        "category": "STRItem",
+        "id": 760010
+      },
+      {
+        "category": "STRItem",
+        "id": 760020
+      },
+      {
+        "category": "STRItem",
+        "id": 761010
+      },
+      {
+        "category": "STRItem",
+        "id": 761020
+      },
+      {
+        "category": "STRItem",
+        "id": 761030
+      },
+      {
+        "category": "STRItem",
+        "id": 761040
+      },
+      {
+        "category": "STRItem",
+        "id": 761050
+      },
+      {
+        "category": "STRItem",
+        "id": 761060
+      },
+      {
+        "category": "STRItem",
+        "id": 761070
+      },
+      {
+        "category": "STRItem",
+        "id": 761080
+      },
+      {
+        "category": "STRItem",
+        "id": 761090
+      },
+      {
+        "category": "STRItem",
+        "id": 761100
+      },
+      {
+        "category": "STRItem",
+        "id": 761110
+      },
+      {
+        "category": "STRItem",
+        "id": 761120
+      },
+      {
+        "category": "STRItem",
+        "id": 761130
+      },
+      {
+        "category": "STRItem",
+        "id": 761140
+      },
+      {
+        "category": "STRItem",
+        "id": 761150
+      },
+      {
+        "category": "STRItem",
+        "id": 761160
+      },
+      {
+        "category": "STRItem",
+        "id": 761170
+      },
+      {
+        "category": "STRItem",
+        "id": 761180
+      },
+      {
+        "category": "STRItem",
+        "id": 761190
+      },
+      {
+        "category": "STRItem",
+        "id": 761200
+      },
+      {
+        "category": "STRItem",
+        "id": 761210
+      },
+      {
+        "category": "STRItem",
+        "id": 761220
+      },
+      {
+        "category": "STRItem",
+        "id": 761230
+      },
+      {
+        "category": "STRItem",
+        "id": 761240
+      },
+      {
+        "category": "STRItem",
+        "id": 761250
+      },
+      {
+        "category": "STRItem",
+        "id": 761260
+      },
+      {
+        "category": "STRItem",
+        "id": 761270
+      },
+      {
+        "category": "STRItem",
+        "id": 761280
+      },
+      {
+        "category": "STRItem",
+        "id": 10000510
+      },
+      {
+        "category": "STRItem",
+        "id": 10000520
+      },
+      {
+        "category": "STRItem",
+        "id": 1001250030
+      },
+      {
+        "category": "STRCollaboration",
+        "id": 2700070
+      },
+      {
+        "category": "STRCollaboration",
+        "id": 2700080
+      },
+      {
+        "category": "STRCollaboration",
+        "id": 2700090
+      },
+      {
+        "category": "STRCollaboration",
+        "id": 2700071
+      },
+      {
+        "category": "STRCollaboration",
+        "id": 2700081
+      },
+      {
+        "category": "STRCollaboration",
+        "id": 2700091
+      },
+      {
+        "category": "STRCollaboration",
+        "id": 2800001
+      },
+      {
+        "category": "STRProductRecommendation",
+        "id": 6052200
+      },
+      {
+        "category": "STRProductRecommendation",
+        "id": 6052400
+      },
+      {
+        "category": "STRProductRecommendation",
+        "id": 6052500
+      },
+      {
+        "category": "STRProductRecommendation",
+        "id": 6052401
+      },
+      {
+        "category": "STRGameMode",
+        "id": 11
+      },
+      {
+        "category": "STRGameMode",
+        "id": 11101
+      },
+      {
+        "category": "STRGameMode",
+        "id": 11102
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 41001
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 41002
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 41003
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 41004
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 41005
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 41006
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 41007
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 41008
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 410011
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 410021
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 410031
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 410041
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 410051
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 410061
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 410071
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 410081
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 410012
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 410022
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 410032
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 410042
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 410052
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 410062
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 410072
+      },
+      {
+        "category": "STRLuckyStarBattle",
+        "id": 410082
+      },
+      {
+        "category": "STRMap",
+        "id": 82007
+      },
+      {
+        "category": "STRMap",
+        "id": 820070
+      },
+      {
+        "category": "STRMap",
+        "id": 820071
+      },
+      {
+        "category": "STRFriend",
+        "id": 8
+      },
+      {
+        "category": "STRFriend",
+        "id": 1011
+      },
+      {
+        "category": "STRFriend",
+        "id": 2001
+      },
+      {
+        "category": "STRFriend",
+        "id": 2002
+      },
+      {
+        "category": "STRFriend",
+        "id": 2003
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 103
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 104
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 20013
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 20014
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 20015
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 20016
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 20017
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 20018
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 20019
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 2001301
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 2001401
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 2001501
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 2001601
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 2001701
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 2001801
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 2001901
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 60014
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 60015
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 60016
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 60017
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 600141
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 600151
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 600161
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 600171
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 10000
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 100001
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 100011
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 100021
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 32111
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 32112
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 321111
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 321121
+      },
+      {
+        "category": "STRGUI",
+        "id": 1000009
+      },
+      {
+        "category": "STRGUI",
+        "id": 1040005
+      },
+      {
+        "category": "STRGUI",
+        "id": 1070001
+      },
+      {
+        "category": "STRGUI",
+        "id": 1070002
+      },
+      {
+        "category": "STRGUI",
+        "id": 1070003
+      },
+      {
+        "category": "STRGUI",
+        "id": 1070004
+      },
+      {
+        "category": "STRGUI",
+        "id": 1070005
+      },
+      {
+        "category": "STRMonster",
+        "id": 10560
+      },
+      {
+        "category": "STRMonster",
+        "id": 10570
+      },
+      {
+        "category": "STRMonster",
+        "id": 10580
+      },
+      {
+        "category": "STRMonster",
+        "id": 10590
+      },
+      {
+        "category": "STRMonster",
+        "id": 10561
+      },
+      {
+        "category": "STRMonster",
+        "id": 10571
+      },
+      {
+        "category": "STRMonster",
+        "id": 10581
+      },
+      {
+        "category": "STRMonster",
+        "id": 10591
+      },
+      {
+        "category": "STRMonster",
+        "id": 10563
+      },
+      {
+        "category": "STRMonster",
+        "id": 10573
+      },
+      {
+        "category": "STRMonster",
+        "id": 10583
+      },
+      {
+        "category": "STRMonster",
+        "id": 10593
+      },
+      {
+        "category": "STRMonster",
+        "id": 10564
+      },
+      {
+        "category": "STRMonster",
+        "id": 10574
+      },
+      {
+        "category": "STRMonster",
+        "id": 10584
+      },
+      {
+        "category": "STRMonster",
+        "id": 10594
+      },
+      {
+        "category": "STRActivity",
+        "id": 6052120
+      },
+      {
+        "category": "STRActivity",
+        "id": 6060410
+      },
+      {
+        "category": "STRMission",
+        "id": 7807
+      },
+      {
+        "category": "STRMission",
+        "id": 7808
+      },
+      {
+        "category": "STRMission",
+        "id": 8000
+      },
+      {
+        "category": "STRMission",
+        "id": 8001
+      },
+      {
+        "category": "STRMission",
+        "id": 8002
+      },
+      {
+        "category": "STRMission",
+        "id": 8003
+      },
+      {
+        "category": "STRMission",
+        "id": 8004
+      },
+      {
+        "category": "STRPVENurturance",
+        "id": 301010
+      },
+      {
+        "category": "STRPVENurturance",
+        "id": 302010
+      },
+      {
+        "category": "STRBattlePass",
+        "id": 2026050
+      },
+      {
+        "category": "STRBattlePass",
+        "id": 2026051
+      },
+      {
+        "category": "STRBattlePass",
+        "id": 2026052
+      },
+      {
+        "category": "STRBattlePass",
+        "id": 6052101
+      },
+      {
+        "category": "STRBattlePass",
+        "id": 6052102
+      },
+      {
+        "category": "STRBattlePass",
+        "id": 6052202
+      },
+      {
+        "category": "STRBattlePass",
+        "id": 6052301
+      },
+      {
+        "category": "STRBattlePass",
+        "id": 6052302
+      },
+      {
+        "category": "STRBattlePass",
+        "id": 6052309
+      },
+      {
+        "category": "STRBattlePass",
+        "id": 6052310
+      },
+      {
+        "category": "STRBattlePass",
+        "id": 6052311
+      },
+      {
+        "category": "STRBattlePass",
+        "id": 6052312
+      },
+      {
+        "category": "STRBattlePass",
+        "id": 6052313
+      },
+      {
+        "category": "STRBattlePass",
+        "id": 6052314
+      },
+      {
+        "category": "STRBattlePass",
+        "id": 6052315
+      },
+      {
+        "category": "STRBattlePass",
+        "id": 6052316
+      },
+      {
+        "category": "STRBanner",
+        "id": 6052201
+      },
+      {
+        "category": "STRBanner",
+        "id": 6052301
+      }
+    ],
     "db_only": [],
-    "mismatches": []
+    "mismatches": [
+      {
+        "category": "STRSkin",
+        "id": 100127003,
+        "field": "jp",
+        "bundle_value": "「探偵様、遅いよ。せっかく映画のチケットがあるから、映画を見てご飯をおごってあげるのに。」ボニーは電話の相手に愚痴をこぼしたが、その口調はどちらかと言えばからかうようなものだった。\n「あなたって人は！突然映画館に呼び出すなんてないでしょ！言っておくけど、今日ちゃんとした説明をしてくれなかったら、許さないからね！」電話からファニイの声が聞こえ、ボニーは電話を耳から離し、ファニイが叫んでいるのを聞いた。\n「映画を見てご飯を食べるってだけなのに、そんなに説明が必要？」\n「理由もなく私をご飯や映画に誘うはずないでしょ！絶対に信じない！」ファニイはまだ信じず、しつこく続けた。\n「たまたま私が暇だっただけだよ。あなたも知ってるでしょ、私には他に友達があまりいないんだ。悪友や敵はたくさんいるけど。」\n「私はあなたの友達なんかじゃないよ！早く何の用か言って！」ファニイのイライラした声がどんどん大きくなる。\n「来てから教えるよ。あ、違う、映画を見終わってご飯を食べ終わったら教えるね。」ボニーは変な笑い方をした。\n「そんなの知らない！早く先に教えてよ！」\n「じゃあ、映画館の入り口で待ってるね？」\n「え？おい！早く教えて……ツーツーツー……」\n「バカなの？そんなに理由がいるわけないでしょ、へへ。」ボニーは独り言を言いながら、電話を切った。",
+        "db_value": "「探偵様、遅いよ。せっかく映画のチケットがあるから、映画を見てご飯をおごってあげるのに。」ボニーは電話の相手に愚痴をこぼしたが、その口調はどちらかと言えばからかうようなものだった。\n「あなたって人は！突然映画館に呼び出すなんてないでしょ！言っておくけど、今日ちゃんとした説明をしてくれなかったら、許さないからね！」電話からファニイの声が聞こえ、ボニーは電話を耳から離し、ファニイが叫んでいるのを聞いた。\n「映画を見てご飯を食べるってだけなのに、そんなに説明が必要？」\n「理由もなく私をご飯や映画に誘うはずないでしょ！絶対に信じない！」ファニイはまだ信じず、しつこく続けた。\n「たまたま私が暇だっただけだよ。あなたも知ってるでしょ、私には他に友達があまりいないんだ。悪友や敵はたくさんいるけど。」\n「私はあなたの友達なんかじゃないよ！早く何の用か言って！」ファニイのイライラした声がどんどん大きくなる。\n「来てから教えるよ。あ、違う、映画を見終わってご飯を食べ終わったら教えるね。」ボニーは変な笑い方をした。\n「そんなの知らない！早く先に教えてよ！」\n「じゃあ、映画館の入り口で待ってるね？」\n「え？おい！早く教えて……ツーツーツー……」\n「バカなの？そんなに理由がいるわけないでしょ、へへ。」ボニーは独り言を言いながら、電話を切った。\n  \n "
+      },
+      {
+        "category": "STRExchangeStore",
+        "id": 666,
+        "field": "cn_s",
+        "bundle_value": "海潮暗面",
+        "db_value": "极限水乡"
+      },
+      {
+        "category": "STRExchangeStore",
+        "id": 666,
+        "field": "en",
+        "bundle_value": "Tide's Shadow",
+        "db_value": "Extreme Water Town"
+      },
+      {
+        "category": "STRExchangeStore",
+        "id": 666,
+        "field": "jp",
+        "bundle_value": "海汐の裏",
+        "db_value": "水郷古鎮極限"
+      },
+      {
+        "category": "STRExchangeStore",
+        "id": 666,
+        "field": "cn_t",
+        "bundle_value": "海潮暗面",
+        "db_value": "極限水鄉"
+      },
+      {
+        "category": "STRExchangeStore",
+        "id": 777,
+        "field": "cn_s",
+        "bundle_value": "幸运星争夺战",
+        "db_value": "魔术剧团"
+      },
+      {
+        "category": "STRExchangeStore",
+        "id": 777,
+        "field": "en",
+        "bundle_value": "Lucky Star Clash",
+        "db_value": "Magic Cast"
+      },
+      {
+        "category": "STRExchangeStore",
+        "id": 777,
+        "field": "jp",
+        "bundle_value": "ラッキースタークラッシュ",
+        "db_value": "魔術劇団"
+      },
+      {
+        "category": "STRExchangeStore",
+        "id": 777,
+        "field": "cn_t",
+        "bundle_value": "幸運星爭奪戰",
+        "db_value": "魔術劇團"
+      },
+      {
+        "category": "STRCharacter",
+        "id": 3033,
+        "field": "jp",
+        "bundle_value": "ジル・スティングレイ\n誕生日：6月27日\n好きな飲み物：ビール\n\nBTC公認のバーテンダーであり、現在はVA-11 Hall-A（通称「ヴァルハラ」）で働く。\n黒毛の青い瞳の猫・フォアのシングルマザーであるジルは、暇な時間にはネットサーフィンをしながら「今月の家賃を払えなくなるから無駄遣いするな」という自分との戦いを繰り広げている。しかしそんな平凡な生活の中でも、「幽霊少女」の目撃情報をはじめ、様々な奇妙な出来事が彼女の元に降りかかってくる。",
+        "db_value": "ジル・スティングレイ\n誕生日：6月27日\n好きな飲み物：ビール\n\nBTC公認のバーテンダーであり、現在はVA-11 Hall-A（通称「ヴァルハラ」）で働く。\n黒毛の青い瞳の猫・フォレのシングルマザーであるジルは、暇な時間にはネットサーフィンをしながら「今月の家賃を払えなくなるから無駄遣いするな」という自分との戦いを繰り広げている。しかしそんな平凡な生活の中でも、「幽霊少女」の目撃情報をはじめ、様々な奇妙な出来事が彼女の元に降りかかってくる。"
+      },
+      {
+        "category": "STRMessage",
+        "id": 1055,
+        "field": "cn_s",
+        "bundle_value": "使用{0}友情等级将直接提升至5级，确定使用吗？",
+        "db_value": "使用{0}将直接升满友情等级，确定使用吗？"
+      },
+      {
+        "category": "STRMessage",
+        "id": 1055,
+        "field": "en",
+        "bundle_value": "Using {0} will LV5 out the Friendship LV. Are you sure?",
+        "db_value": "Using {0} will max out the Friendship LV. Are you sure?"
+      },
+      {
+        "category": "STRMessage",
+        "id": 1055,
+        "field": "jp",
+        "bundle_value": "{0}を１つ消耗して絆レベルを5にします、よろしいですか？",
+        "db_value": "{0}を１つ消耗して絆レベルをMAXにします、よろしいですか？"
+      },
+      {
+        "category": "STRMessage",
+        "id": 1055,
+        "field": "cn_t",
+        "bundle_value": "使用{0}友情等級將直接提升至5級，確定使用嗎？",
+        "db_value": "使用{0}將直接升滿羈絆等級，確定使用嗎？"
+      },
+      {
+        "category": "STRMessage",
+        "id": 1116,
+        "field": "cn_s",
+        "bundle_value": "{0}撤销了换位请求",
+        "db_value": "{0}撤销了换位请求\n"
+      },
+      {
+        "category": "STRMessage",
+        "id": 1117,
+        "field": "cn_s",
+        "bundle_value": "{0}拒绝了换位请求",
+        "db_value": "{0}拒绝了换位请求\n"
+      },
+      {
+        "category": "STRMessage",
+        "id": 1118,
+        "field": "cn_s",
+        "bundle_value": "更换位置成功",
+        "db_value": "更换位置成功\n"
+      },
+      {
+        "category": "STRMessage",
+        "id": 100015,
+        "field": "en",
+        "bundle_value": "Maintenance Compensation",
+        "db_value": "MaintenSance Compensation"
+      },
+      {
+        "category": "STRRechargeStore",
+        "id": 270001,
+        "field": "jp",
+        "bundle_value": "超てんちゃんパック",
+        "db_value": "超天ちゃんパック"
+      },
+      {
+        "category": "STRRechargeStore",
+        "id": 270005,
+        "field": "cn_t",
+        "bundle_value": "魔女兵器造型組合",
+        "db_value": "魔女兵器皮膚組合"
+      },
+      {
+        "category": "STRServer",
+        "id": 10012,
+        "field": "cn_s",
+        "bundle_value": "客户端版本过低，请更到最新版本",
+        "db_value": "客户端版本不对，请更到最新版本"
+      },
+      {
+        "category": "STRBuff",
+        "id": 3030101,
+        "field": "jp",
+        "bundle_value": "あなたのカクテルが、誰かの運命を変える。",
+        "db_value": "あまたのカクテルが、誰かの運命を変える。"
+      },
+      {
+        "category": "STRSkill",
+        "id": 302010,
+        "field": "cn_s",
+        "bundle_value": "回复当前【爱】层数的生命值，获得【爱】层数的移动速度，持续[color=#91e1ff]1[/color]回合。回合结束时扣除[color=#91e1ff]4[/color]层【爱】。",
+        "db_value": "回复当前【爱】层数的生命值，获得【爱】层数的移动加成，持续[color=#91e1ff]1[/color]回合。回合结束时扣除[color=#91e1ff]4[/color]层【爱】。"
+      },
+      {
+        "category": "STRSkill",
+        "id": 302010,
+        "field": "cn_t",
+        "bundle_value": "回複當前【愛】層數的生命值，獲得【愛】層數的移動速度，持續[color=#91e1ff]1[/color]回合。回合結束時扣除[color=#91e1ff]4[/color]層【愛】。",
+        "db_value": "回複當前【愛】層數的生命值，獲得【愛】層數的移動加成，持續[color=#91e1ff]1[/color]回合。回合結束時扣除[color=#91e1ff]4[/color]層【愛】。"
+      },
+      {
+        "category": "STRSkill",
+        "id": 103110,
+        "field": "cn_s",
+        "bundle_value": "如果上个回合没有受到伤害，则攻击力[color=#94FF46]+3[/color]（不叠加，受伤后清除）。",
+        "db_value": "若上个回合没有受到伤害，则攻击力[color=#94FF46]+3[/color]（不叠加，受伤后清除）。"
+      },
+      {
+        "category": "STRSkill",
+        "id": 103110,
+        "field": "cn_t",
+        "bundle_value": "如果上個回合沒有受到傷害，則攻擊力[color=#94FF46]+3[/color]（不疊加，受傷後清除）。",
+        "db_value": "若上個回合沒有受到傷害，則攻擊力[color=#94FF46]+3[/color]（不疊加，受傷後清除）。"
+      },
+      {
+        "category": "STRSkill",
+        "id": 122110,
+        "field": "jp",
+        "bundle_value": "ターン終了時、手札数が[color=#4386F4]6[/color]より少ない場合、カード1枚を得る。",
+        "db_value": "ターン終了時、手札数が[color=#4386F4]6[/color]より少ないの場合、カード1枚を得る。"
+      },
+      {
+        "category": "STRSkill",
+        "id": 1010110,
+        "field": "jp",
+        "bundle_value": "場に長戟霊が1体存在するごとに、雅央の攻撃力[color=#4386F4]+2[/color]プレイヤーが長戟霊を1体破壊するごとに、雅央は最大HPの[color=#94FF46]10%[/color][Astral=Blood:1011*0.1][/Astral]を失います。",
+        "db_value": "場に长戟霊が1体存在するごとに、雅央の攻撃力[color=#4386F4]+2[/color]プレイヤーが长戟霊を1体破壊するごとに、雅央は最大HPの[color=#94FF46]10%[/color][Astral=Blood:1011*0.1][/Astral]を失います。"
+      },
+      {
+        "category": "STRItem",
+        "id": 70127,
+        "field": "jp",
+        "bundle_value": "ボニージュジュ",
+        "db_value": "ポニージュジュ"
+      },
+      {
+        "category": "STRItem",
+        "id": 71992,
+        "field": "en",
+        "bundle_value": "Profile Card -Astral Town",
+        "db_value": "Profile Card -Astral City"
+      },
+      {
+        "category": "STRItem",
+        "id": 91045,
+        "field": "jp",
+        "bundle_value": "超絶最かわてんしちゃん-超てんちゃんパック",
+        "db_value": "超絶最かわてんしちゃん-超天ちゃんパック"
+      },
+      {
+        "category": "STRItem",
+        "id": 100128001,
+        "field": "cn_t",
+        "bundle_value": "初始造型-玲玲",
+        "db_value": "初始皮膚-玲玲"
+      },
+      {
+        "category": "STRItem",
+        "id": 100128002,
+        "field": "cn_t",
+        "bundle_value": "羈絆造型-玲玲",
+        "db_value": "羈絆皮膚-玲玲"
+      },
+      {
+        "category": "STRItem",
+        "id": 10010,
+        "field": "cn_t",
+        "bundle_value": "整合多種造型的禮包",
+        "db_value": "整合多種皮膚的禮包"
+      },
+      {
+        "category": "STRItem",
+        "id": 10000120,
+        "field": "jp",
+        "bundle_value": "限定コラボ",
+        "db_value": "限时联动"
+      },
+      {
+        "category": "STRCollaboration",
+        "id": 2025070,
+        "field": "cn_t",
+        "bundle_value": "聯動造型購買",
+        "db_value": "聯動皮膚購買"
+      },
+      {
+        "category": "STRCollaboration",
+        "id": 2025071,
+        "field": "cn_t",
+        "bundle_value": "重複獲取的造型將轉化爲配貨票，是否購買？",
+        "db_value": "重複獲取的皮膚將轉化爲配貨票，是否購買？"
+      },
+      {
+        "category": "STRCollaboration",
+        "id": 2700030,
+        "field": "cn_t",
+        "bundle_value": "造型：魔女兵器-阿蘭娜",
+        "db_value": "皮膚：魔女兵器-阿蘭娜"
+      },
+      {
+        "category": "STRCollaboration",
+        "id": 2700040,
+        "field": "cn_t",
+        "bundle_value": "造型：魔女兵器-美咲",
+        "db_value": "皮膚：魔女兵器-美咲"
+      },
+      {
+        "category": "STRProductRecommendation",
+        "id": 6022710,
+        "field": "cn_t",
+        "bundle_value": "周年限定造型禮包",
+        "db_value": "周年限定皮膚禮包"
+      },
+      {
+        "category": "STRMap",
+        "id": 81007,
+        "field": "cn_s",
+        "bundle_value": "梦想号-上层甲板",
+        "db_value": "星趴·梦想号"
+      },
+      {
+        "category": "STRMap",
+        "id": 81007,
+        "field": "en",
+        "bundle_value": "Dreama - Upper Deck",
+        "db_value": "Dreama"
+      },
+      {
+        "category": "STRMap",
+        "id": 81007,
+        "field": "jp",
+        "bundle_value": "夢想号-アッパーデッキ",
+        "db_value": "夢想号"
+      },
+      {
+        "category": "STRMap",
+        "id": 81007,
+        "field": "cn_t",
+        "bundle_value": "夢想號-上層甲板",
+        "db_value": "星趴·夢想號"
+      },
+      {
+        "category": "STRMap",
+        "id": 810070,
+        "field": "cn_s",
+        "bundle_value": "大平层的上层甲板已经对外开放？",
+        "db_value": "击败海盗王嘎呜，保护梦想号！"
+      },
+      {
+        "category": "STRMap",
+        "id": 810070,
+        "field": "en",
+        "bundle_value": "The newly expanded upper deck is now open to visitors!?",
+        "db_value": "Defeat Pirate King Gawu and protect the Dreama!"
+      },
+      {
+        "category": "STRMap",
+        "id": 810070,
+        "field": "jp",
+        "bundle_value": "広々としたアッパーデッキがもう一般開放された？",
+        "db_value": "海賊王ガオーを撃破し！夢想号を保護せよ！"
+      },
+      {
+        "category": "STRMap",
+        "id": 810070,
+        "field": "cn_t",
+        "bundle_value": "大平層的上層甲板已經對外開放？",
+        "db_value": "擊敗海盜王嘎嗚，保護夢想號！"
+      },
+      {
+        "category": "STRMap",
+        "id": 810071,
+        "field": "cn_s",
+        "bundle_value": "为了拓展更多可游玩区域，梦想号对上层甲板进行了重新装修与整合，将其改造为一个大平层。原本位于中间的娱乐区和会议区部分功能也延伸至此。这种空间布局不仅可容纳更多活动，也为游客的自由流动提供了便利。",
+        "db_value": " 梦想号是由恩菲尔德家族旗下的海运公司‘红沙’运营的巨型豪华双体游轮，是该级别中的首艘双体游轮。从绿洲市的‘拉卡拉港’起航，需5天抵达联合城的‘南风峡湾’。途中将经过几个特色鲜明的岛屿，是热门的旅游线路。"
+      },
+      {
+        "category": "STRMap",
+        "id": 810071,
+        "field": "en",
+        "bundle_value": "To expand the available area for guest recreation, the Dreama's upper deck has been renovated and restructured, trasforming it into a spacious, open floor.\nSome functions from the original central entertainment and conference areas have also been relocated here.\nThe new layout not only accomodates a wider range of activities, but also allows for easier movement throughout the ship.",
+        "db_value": "The Dreama is a massive luxury catamaran operated by the Enfield family’s Red Sand Shipping Co., and the first of its class.\nIt departs from Lakara Port in Oasis City and takes five days to reach South Wind Valley in Union City. Along the way, it passes several uniquely themed islands, making it a popular travel route."
+      },
+      {
+        "category": "STRMap",
+        "id": 810071,
+        "field": "jp",
+        "bundle_value": "遊べるエリアを拡張するため、夢想号はアッパーデッキを改装・統合し、広々としたフロアに生まれ変わらせた。中央にあったエンタメエリアや会議エリアの一部機能もここに拡張。このレイアウトにより、より多くのアクティビティが可能になり、観光客の自由な移動も便利になった。",
+        "db_value": "ドリーム号はエンフィールド家が所有する海運会社「レッドサンド」が運航する巨大豪華双胴客船で、このクラスとしては初の双胴船である。オアシス市の「ラカラ港」から出航し、ユニオンシティの「南風フィヨルド」に到着するまで5日かかる。途中、いくつかの特色ある島々を経由する人気の観光ルートである。"
+      },
+      {
+        "category": "STRMap",
+        "id": 810071,
+        "field": "cn_t",
+        "bundle_value": "爲了拓展更多可遊玩區域，夢想號對上層甲板進行了重新裝修與整合，將其改造爲一個大平層。原本位於中間的娛樂區和會議區部分功能也延伸至此。這種空間佈局不僅可容納更多活動，也爲遊客的自由流動提供了便利。",
+        "db_value": "夢想號是由恩菲爾德家族旗下的海運公司‘紅沙’運營的巨型豪華雙體遊輪，是該級別中的首艘雙體遊輪。從綠洲市的‘拉卡拉港’起航，需5天抵達聯合城的‘南風峽灣’。途中將經過幾個特色鮮明的島嶼，是熱門的旅遊線路。"
+      },
+      {
+        "category": "STRCard",
+        "id": 210231,
+        "field": "cn_t",
+        "bundle_value": "本回合出牌數+8，獲得888星幣、88層星光，攻擊力永久+8。所有角色回複88點生命值。",
+        "db_value": "本回合出牌數+8，獲得888星幣、88層星光，攻擊力永久+8。所有角色恢複88點生命值。"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 100,
+        "field": "cn_s",
+        "bundle_value": "通用",
+        "db_value": "晋升"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 100,
+        "field": "en",
+        "bundle_value": "General",
+        "db_value": "Promotion"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 100,
+        "field": "jp",
+        "bundle_value": "共通",
+        "db_value": "昇進"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 100,
+        "field": "cn_t",
+        "bundle_value": "通用",
+        "db_value": "晉升"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 101,
+        "field": "cn_s",
+        "bundle_value": "财富",
+        "db_value": "幸运"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 101,
+        "field": "en",
+        "bundle_value": "Prosperity",
+        "db_value": "Luck"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 101,
+        "field": "jp",
+        "bundle_value": "財宝",
+        "db_value": "幸運"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 101,
+        "field": "cn_t",
+        "bundle_value": "財富",
+        "db_value": "幸運"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 102,
+        "field": "cn_s",
+        "bundle_value": "晋升",
+        "db_value": "繁荣"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 102,
+        "field": "en",
+        "bundle_value": "Promotion",
+        "db_value": "Prosperity"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 102,
+        "field": "jp",
+        "bundle_value": "昇進",
+        "db_value": "繫栄"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 102,
+        "field": "cn_t",
+        "bundle_value": "晉升",
+        "db_value": "繁榮"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 1000101,
+        "field": "cn_s",
+        "bundle_value": "骰点结束时，获得[Astral]TriggerParam:0*Gold[/Astral]星币。",
+        "db_value": "骰点结束时，获得[Astral]TriggerParam:0*Gold[/Astral]星币"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 1000201,
+        "field": "cn_s",
+        "bundle_value": "骰出[Astral]TriggerPoint:0[/Astral]时，获得[Astral]TriggerParam:0*Gold[/Astral]星币与[Astral]TriggerParam:1*Exp[/Astral]经验。\n卖出时，额外获得[Astral]addPrice[/Astral]星币。",
+        "db_value": "骰出[Astral]TriggerPoint:0[/Astral]时，获得[Astral]TriggerParam:0*Gold[/Astral]星币与[Astral]TriggerParam:1*Exp[/Astral]经验\n卖出时，额外获得[Astral]addPrice[/Astral]星币"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 1000301,
+        "field": "cn_s",
+        "bundle_value": "骰出[Astral]TriggerPoint:0[/Astral]时，获得[Astral]TriggerParam:0*Gold[/Astral]星币。",
+        "db_value": "骰出[Astral]TriggerPoint:0[/Astral]时，获得[Astral]TriggerParam:0*Gold[/Astral]星币"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 2000101,
+        "field": "cn_s",
+        "bundle_value": "停留时，使得自身与相邻的建筑获得[Astral]StopParam:0[/Astral]经验。\n经过时，获得[Astral]WalkParam:0*Gold[/Astral]星币。",
+        "db_value": "停留时，使得自身与相邻的建筑获得[Astral]StopParam:0[/Astral]经验。\n经过时，获得[Astral]WalkParam:0*Gold[/Astral]星币"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 2000201,
+        "field": "cn_s",
+        "bundle_value": "停留时，使相邻<img src='ui://xuaw6o8je4d2q3z' width='50' height='50'/>建筑的骰点星币获取量永久+[Astral]StopParam:0[/Astral]。\n骰出[Astral]TriggerPoint:0[/Astral]时，获得[Astral]TriggerParam:0*Gold[/Astral]星币",
+        "db_value": "停留时，使相邻<img src='ui://xuaw6o8je4d2q3z' width='50' height='50'/>建筑的骰点星币获取量永久+[Astral]StopParam:0[/Astral]\n骰出[Astral]TriggerPoint:0[/Astral]时，获得[Astral]TriggerParam:0*Gold[/Astral]星币"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 2000301,
+        "field": "cn_s",
+        "bundle_value": "骰出偶数时，获得[Astral]TriggerParam:0*Gold[/Astral]星币\n如果骰出[Astral]TriggerPoint:2[/Astral]，获得星币数永久+[Astral]TriggerParam:1[/Astral]。",
+        "db_value": "骰出偶数时，获得[Astral]TriggerParam:0*Gold[/Astral]星币\n如果骰出[Astral]TriggerPoint:2[/Astral]，获得星币数永久+[Astral]TriggerParam:1[/Astral]"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 2000701,
+        "field": "cn_s",
+        "bundle_value": "骰点结束时，使得所有【存钱罐】与【小猪银行】获得[Astral]TriggerParam:0*Exp[/Astral]经验。\n经过此建筑时，获得[Astral]WalkParam:0*Gold[/Astral]星币，卖出【存钱罐】或【小猪银行】后，使经过时获得的星币永久+1。",
+        "db_value": "骰点结束时，使得所有【存钱罐】与【小猪银行】获得[Astral]TriggerParam:0*Exp[/Astral]经验。\n经过此建筑时，获得[Astral]WalkParam:0*Gold[/Astral]星币，卖出【存钱罐】或【小猪银行】后，使经过时获得的星币量永久+1"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 2000801,
+        "field": "cn_s",
+        "bundle_value": "骰出3或4时，触发相邻<img src='ui://xuaw6o8je4d2q3z' width='50' height='50'/>建筑的骰点效果。\n停留时，使得所有<img src='ui://xuaw6o8je4d2q3z' width='50' height='50'/>骰点星币获取量永久+[Astral]StopParam:0[/Astral]。",
+        "db_value": "骰出3或4时，触发相邻<img src='ui://xuaw6o8je4d2q3z' width='50' height='50'/>建筑的骰点效果\n停留时，使得所有<img src='ui://xuaw6o8je4d2q3z' width='50' height='50'/>骰点星币获取量永久+[Astral]StopParam:0[/Astral]"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 2000901,
+        "field": "cn_s",
+        "bundle_value": "掷出两枚骰子时，获得[Astral]TriggerParam:0*Gold[/Astral]星币。\n骰点结果为1时，使得下次行动可以掷出两枚骰子。",
+        "db_value": "掷出两枚骰子时，获得[Astral]TriggerParam:0*Gold[/Astral]星币\n骰点结果为1时，使得下次行动可以掷出两枚骰子"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 2001001,
+        "field": "cn_s",
+        "bundle_value": "经过时，获得[Astral]WalkParam:0*Gold[/Astral]星币，并使随机1个<img src='ui://xuaw6o8je4d2q3z' width='50' height='50'/>建筑的骰点星币获取量永久+[Astral]WalkParam:1[/Astral]。",
+        "db_value": "经过时，获得[Astral]WalkParam:0*Gold[/Astral]星币，并使随机1个<img src='ui://xuaw6o8je4d2q3z' width='50' height='50'/>建筑的骰点星币获取量永久+1"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 2001001,
+        "field": "en",
+        "bundle_value": "When passing by, gain [Astral]WalkParam:0*Gold[/Astral] Star Coins.\nWhenever <img src='ui://xuaw6o8je4d2q3z' width='50' height='50'/> buildings on the field have dice effects increased, permanently increase this effect by [Astral]WalkParam:1[/Astral].",
+        "db_value": "When passing by, gain [Astral]WalkParam:0*Gold[/Astral] Star Coins.\nWhenever <img src='ui://xuaw6o8je4d2q3z' width='50' height='50'/> buildings on the field have dice effects increased, permanently increase this effect by [Astral]OtherParam:0[/Astral]."
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 2001001,
+        "field": "jp",
+        "bundle_value": "通過時、スターコインを[Astral]WalkParam:0*Gold[/Astral]獲得する、場にいる<img src='ui://xuaw6o8je4d2q3z' width='50' height='50'/>の建物からランダムに1つのスターコイン獲得数+[Astral]WalkParam:1[/Astral]",
+        "db_value": "通過時、スターコインを[Astral]WalkParam:0*Gold[/Astral]獲得する、場にいる<img src='ui://xuaw6o8je4d2q3z' width='50' height='50'/>の建物からランダムに1つのスターコイン獲得数+1"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 2001001,
+        "field": "cn_t",
+        "bundle_value": "經過時，獲得[Astral]WalkParam:0*Gold[/Astral]星幣，並使隨機1個<img src='ui://xuaw6o8je4d2q3z' width='50' height='50'/>建築的股點星幣獲取量永久+[Astral]WalkParam:1[/Astral]",
+        "db_value": "經過時，獲得[Astral]WalkParam:0*Gold[/Astral]星幣，並使隨機1個<img src='ui://xuaw6o8je4d2q3z' width='50' height='50'/>建築的股點星幣獲取量永久+1"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 2001101,
+        "field": "cn_s",
+        "bundle_value": "骰出5时，自身与随机[Astral]TriggerParam:0[/Astral]个建筑获得[Astral]TriggerParam:1*Exp[/Astral]经验。\n经过时，生成1个【存钱罐】或【小猪银行】",
+        "db_value": "骰出5时，自身与随机[Astral]TriggerParam:0[/Astral]个建筑获得[Astral]TriggerParam:1*Exp[/Astral]经验\n经过时，生成1个【存钱罐】或【小猪银行】"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 2001201,
+        "field": "cn_s",
+        "bundle_value": "经过时，使得下次行动可以掷出两枚骰子。\n掷出两枚骰子时，获得骰点结果*[Astral]TriggerParam:0*Gold[/Astral]的星币。",
+        "db_value": "经过时，使得下次行动可以掷出两枚骰子\n掷出两枚骰子时，获得骰点结果*[Astral]TriggerParam:0*Gold[/Astral]的星币"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 600041,
+        "field": "cn_s",
+        "bundle_value": "回合开始时，获得当前星币总值2%的星币。",
+        "db_value": "回合开始时，获得1星币"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 600041,
+        "field": "en",
+        "bundle_value": "At the start of the turn, gain Star Coins equal to 2% of your current total.",
+        "db_value": "At the start of your turn, gain 1 Star Coin."
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 600041,
+        "field": "jp",
+        "bundle_value": "ターン開始時、現在のスターコイン総所持数の2%を獲得する。",
+        "db_value": "ターン開始時、スターコインを１獲得する。"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 600041,
+        "field": "cn_t",
+        "bundle_value": "回合開始時，獲得當前星幣總值2%的星幣。",
+        "db_value": "回合開始時，獲得1星幣"
+      },
+      {
+        "category": "STRSinglePlayer",
+        "id": 600071,
+        "field": "cn_s",
+        "bundle_value": "骰出1后，下次骰点变为6",
+        "db_value": "骰出1后，下次骰点必定为6"
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 320121,
+        "field": "cn_s",
+        "bundle_value": "刷新2个海盗精锐，1个海王鲨。所有怪物攻击力+1，防御力+2",
+        "db_value": "刷新2个海盗精锐，4个海盗鲨鱼。所有怪物攻击力+1，防御力+2"
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 320121,
+        "field": "en",
+        "bundle_value": "Spawn 2 Pirate Elites and 1 Oceanlord. All monsters gain +1 ATK and +2 DEF.",
+        "db_value": "Randomly spawn 4 Shark Leaders and 2 King Shark on the map. All monsters gain +1 ATK and +2 DEF."
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 320121,
+        "field": "jp",
+        "bundle_value": "海賊精鋭を2体、ザメたらしを1体出現させる。全てのモンスターの攻撃力+1、防御力+2",
+        "db_value": "マップ上にサメ精鋭２体とサメタラシ４体出現！全モンスターに攻撃力+1、防御力+2"
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 320121,
+        "field": "cn_t",
+        "bundle_value": "刷新2個海盜精銳，1個海王鯊。所有怪物攻擊力+1，防禦力+2",
+        "db_value": "刷新2個海盜精銳，4個海盗鲨鱼。所有怪物攻擊力+1，防禦力+2"
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 320131,
+        "field": "cn_s",
+        "bundle_value": "刷新2个海盗精锐，1个海王鲨。所有怪物攻击力+1，防御力+1",
+        "db_value": "刷新2个海盗精锐，4个海盗鲨鱼。所有怪物攻击力+1，防御力+1"
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 320131,
+        "field": "en",
+        "bundle_value": "Spawn 2 Pirate Elites and 1 Oceanlord. All monsters gain +1 ATK and +1 DEF.",
+        "db_value": "Randomly spawn 4 Shark Leaders and 2 King Shark on the map. All monsters gain +1 ATK and +1 DEF."
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 320131,
+        "field": "jp",
+        "bundle_value": "海賊精鋭を2体、ザメたらしを1体出現させる。全てのモンスターの攻撃力+1、防御力+1。",
+        "db_value": "マップ上にサメ精鋭２体とサメタラシ４体出現！全モンスターに攻撃力+1、防御力+1"
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 320131,
+        "field": "cn_t",
+        "bundle_value": "刷新2個海盜精銳，1個海王鯊。所有怪物攻擊力+1，防禦力+1",
+        "db_value": "刷新2個海盜精銳，4個海盗鲨鱼。所有怪物攻擊力+1，防禦力+1"
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 321011,
+        "field": "jp",
+        "bundle_value": "雰囲気系ロボ1体、機械蛇竜1体、爆竹ゲロゲロ4体を出現",
+        "db_value": "雰囲気糸ロボ1体、機械蛇竜1体、爆竹ゲロゲロ4体を出現"
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 321031,
+        "field": "jp",
+        "bundle_value": "雰囲気系ロボ1体、機械蛇竜1体、三連爆竹ゲロゲロ2体を出現。全モンスターの攻撃力+1、防御力+1",
+        "db_value": "雰囲気糸ロボ1体、機械蛇竜1体、三連爆竹ゲロゲロ2体を出現。全モンスターの攻撃力+1、防御力+1"
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 321041,
+        "field": "jp",
+        "bundle_value": "雰囲気系ロボ1体、機械蛇竜1体、三連爆竹ゲロゲロ1体を出現。全モンスターの攻撃力+1、防御力+1",
+        "db_value": "雰囲気糸ロボ1体、機械蛇竜1体、三連爆竹ゲロゲロ1体を出現。全モンスターの攻撃力+1、防御力+1"
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 321051,
+        "field": "jp",
+        "bundle_value": "雰囲気系ロボ1体、機械蛇竜1体、三連爆竹ゲロゲロ1体を出現",
+        "db_value": "雰囲気糸ロボ1体、機械蛇竜1体、三連爆竹ゲロゲロ1体を出現"
+      },
+      {
+        "category": "STRGUI",
+        "id": 1006,
+        "field": "en",
+        "bundle_value": "Edit Note",
+        "db_value": ""
+      },
+      {
+        "category": "STRGUI",
+        "id": 1006,
+        "field": "jp",
+        "bundle_value": "ニックネームを追加",
+        "db_value": ""
+      },
+      {
+        "category": "STRGUI",
+        "id": 1006,
+        "field": "cn_t",
+        "bundle_value": "修改備註",
+        "db_value": ""
+      },
+      {
+        "category": "STRMonster",
+        "id": 10544,
+        "field": "jp",
+        "bundle_value": "１.フィールドにいるプレイヤーを追いかけます。\n2.攻撃を受けた後、反撃出来ません。",
+        "db_value": "１.フィールドにいるプレイヤーを追いかけます。\n２.攻撃を受けた後、反撃出来ません。"
+      },
+      {
+        "category": "STRMission",
+        "id": 6003,
+        "field": "jp",
+        "bundle_value": "ノーマルモードまたは協力チャレンジを１回する",
+        "db_value": "ノーマルモードまだは協力チャレンジを１回する"
+      },
+      {
+        "category": "STRMission",
+        "id": 6006,
+        "field": "jp",
+        "bundle_value": "ノーマルモードまたは協力チャレンジを１回する(デイリー更新)",
+        "db_value": "ノーマルモードまだは協力チャレンジを１回する(デイリー更新)"
+      },
+      {
+        "category": "STRMission",
+        "id": 7500,
+        "field": "jp",
+        "bundle_value": "ノーマルモードまたは協力チャレンジを１回する",
+        "db_value": "ノーマルモードまだは協力チャレンジを１回する"
+      },
+      {
+        "category": "STRMission",
+        "id": 7603,
+        "field": "jp",
+        "bundle_value": "ノーマルモードまたは協力チャレンジを{0}回する",
+        "db_value": "ノーマルモードまだは協力チャレンジを{0}回する"
+      },
+      {
+        "category": "STRBanner",
+        "id": 5060701,
+        "field": "cn_t",
+        "bundle_value": "4款禮包造型超值優惠",
+        "db_value": "4款禮包皮膚超值優惠"
+      },
+      {
+        "category": "STRBanner",
+        "id": 5092840,
+        "field": "cn_t",
+        "bundle_value": "3款禮包造型超值優惠",
+        "db_value": "3款禮包皮膚超值優惠"
+      },
+      {
+        "category": "STRBanner",
+        "id": 5121901,
+        "field": "cn_t",
+        "bundle_value": "2款禮包造型超值優惠",
+        "db_value": "2款禮包皮膚超值優惠"
+      },
+      {
+        "category": "STRBanner",
+        "id": 6022710,
+        "field": "cn_t",
+        "bundle_value": "[size=30]周年限定造型禮包[/size]",
+        "db_value": "[size=30]周年限定皮膚禮包[/size]"
+      }
+    ]
   },
   "db_apply": {
     "enabled": true,
-    "asset_version": "3.1.0.019",
-    "create_count": 0,
-    "update_count": 0,
+    "asset_version": "3.1.0.032",
+    "create_count": 291,
+    "update_count": 66,
     "delete_count": 0,
     "applied": true,
-    "batch_id": "c8d966f7-4879-4a9a-b90d-d9e50fc93889",
-    "log_count": 0,
-    "upsert_count": 0
+    "batch_id": "4cd44247-5924-477e-842d-76bdcd7d717c",
+    "log_count": 357,
+    "upsert_count": 357
   }
 }
