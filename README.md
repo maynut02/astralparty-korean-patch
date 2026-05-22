@@ -1,22 +1,22 @@
 ## Latest Data Check
 ### Finished at
-- 2026-05-22 19:11:11
+- 2026-05-22 19:20:36
 ### Result
-- unchanged
+- changed
 
 ## Latest Data Sync
 ### Date
-- 2026-05-21 21:55:06
+- 2026-05-22 19:23:32
 
 ### Version
 |route|version|revision|report|
 |-----|-------|--------|------|
-|CN_BILIBILI|3.1.0|033|[report](/output_get/CN_BILIBILI/3.1.0/033/report.json)|
-|INT_ANDROID|3.1.0|033|[report](/output_get/INT_ANDROID/3.1.0/033/report.json)|
-|INT_STEAM|3.1.0|033|[report](/output_get/INT_STEAM/3.1.0/033/report.json)|
+|CN_BILIBILI|3.1.0|034|[report](/output_get/CN_BILIBILI/3.1.0/034/report.json)|
+|INT_ANDROID|3.1.0|034|[report](/output_get/INT_ANDROID/3.1.0/034/report.json)|
+|INT_STEAM|3.1.0|034|[report](/output_get/INT_STEAM/3.1.0/034/report.json)|
 
 ### Data Sync
 |type|batch_id|report|
 |----|--------|------|
-|Lang|f295029e-4f66-40f4-9004-9f662890ff24|[report](/state/lang_report.json)|
-|STR|459d0b1a-5f4f-422f-9eb8-2a5dc6bd9fec|[report](/state/str_report.json)|
+|Lang|ed0da548-5eb0-4ed1-ad18-2e3b91090006|[report](/state/lang_report.json)|
+|STR|8720e293-779f-4a11-b9b5-e04e62b9bc9b|[report](/state/str_report.json)|
