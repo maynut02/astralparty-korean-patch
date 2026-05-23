@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-05-23T04:01:30Z",
+  "checked_at": "2026-05-23T04:10:28Z",
   "version": "3.1.0",
   "routes": {
     "INT_STEAM": {
@@ -25,8 +25,16 @@
       "version": "3.1.0",
       "revision": "034",
       "report_path": "output_get/CN_BILIBILI/3.1.0/034/report.json"
+    },
+    "CN_STEAM": {
+      "bundle_count": 483,
+      "shard_count": 1,
+      "changed": true,
+      "version": "3.1.0",
+      "revision": "034",
+      "report_path": "output_get/CN_STEAM/3.1.0/034/report.json"
     }
   },
-  "has_changes": false,
+  "has_changes": true,
   "int_steam_changed": false
 }
