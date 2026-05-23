@@ -12,7 +12,7 @@ DEFAULT_LANG_REPORT_FILE = "state/lang_report.json"
 DEFAULT_STR_REPORT_FILE = "state/str_report.json"
 
 ROUTES_INT = ("INT_STEAM", "INT_ANDROID")
-ROUTES_CN = ("CN_BILIBILI",)
+ROUTES_CN = ("CN_BILIBILI", "CN_STEAM")
 ROUTE_CHOICES = ROUTES_INT + ROUTES_CN
 ROUTE_HOST_BY_PREFIX = {
     "INT_": "selist.feimogames.com",
@@ -20,11 +20,20 @@ ROUTE_HOST_BY_PREFIX = {
 }
 HOTADDRESS_ROUTE_PARAM_BY_ROUTE = {
     "CN_BILIBILI": "110001957",
+    "CN_STEAM": "110001933",
 }
 
 FILES_KO_DIR = Path("files_ko")
 FILES_ORIGIN_DIR = Path("files_origin")
 
+# INT_STEAM
 # http://selist.feimogames.com:7878/api/hotaddress/get?route=INT_STEAM&version=3.1.0
+
+# INT_ANDROID
 # http://selist.feimogames.com:7878/api/hotaddress/get?route=INT_ANDROID&version=3.1.0
+
+# CN_STEAM(110001933)
+# http://se-web-cn.feimogames.com:7878/api/hotaddress/get?route=110001933&version=3.1.0
+
+# CN_BILIBILI(110001957)
 # http://se-web-cn.feimogames.com:7878/api/hotaddress/get?route=110001957&version=3.1.0

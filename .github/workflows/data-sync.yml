@@ -34,7 +34,7 @@ jobs:
       int_steam_changed: ${{ steps.plan.outputs.int_steam_changed }}
     env:
       VERSION: ${{ github.event.inputs.version }}
-      ROUTES: "INT_STEAM,INT_ANDROID,CN_BILIBILI"
+      ROUTES: "INT_STEAM,INT_ANDROID,CN_BILIBILI,CN_STEAM"
       PER_SHARD: "500"
       MAX_SHARDS: "20"
 
@@ -458,7 +458,7 @@ jobs:
       int_steam_changed: ${{ steps.plan.outputs.int_steam_changed }}
     env:
       VERSION: ${{ needs.plan-shards.outputs.version }}
-      ROUTES: "INT_STEAM,INT_ANDROID,CN_BILIBILI"
+      ROUTES: "INT_STEAM,INT_ANDROID,CN_BILIBILI,CN_STEAM"
       PER_SHARD: "500"
       MAX_SHARDS: "20"
 
