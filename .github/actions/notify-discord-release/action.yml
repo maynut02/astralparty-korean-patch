@@ -51,7 +51,7 @@ runs:
         fi
 
         RELEASE_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${TAG}"
-        WORKFLOW_TREE_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/tree/${WORKFLOW_REF}"
+        WORKFLOW_RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
         TIMESTAMP="$(date -u +%Y-%m-%dT%H:%M:%S.000Z)"
 
         EMBED_DESCRIPTION="# ${TAG}"
@@ -62,7 +62,7 @@ runs:
         PAYLOAD="$(jq -n \
           --arg tag "${TAG}" \
           --arg release_url "${RELEASE_URL}" \
-          --arg workflow_tree_url "${WORKFLOW_TREE_URL}" \
+          --arg workflow_run_url "${WORKFLOW_RUN_URL}" \
           --arg autopatcher_url "${AUTOPATCHER_URL}" \
           --arg autopatch_page_url "${AUTOPATCH_PAGE_URL}" \
           --arg homepage_url "${HOMEPAGE_URL}" \
@@ -92,7 +92,7 @@ runs:
                   {
                     name: "정보",
                     value: (
-                      "[작업 상태](" + $workflow_tree_url + ") | " +
+                      "[작업 상태](" + $workflow_run_url + ") | " +
                       "[릴리즈 정보](" + $release_url + ") | " +
                       "[변경 내용](" + $changelog_url + ")"
                     )
