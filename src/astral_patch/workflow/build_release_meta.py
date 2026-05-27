@@ -95,22 +95,7 @@ def main(argv: list[str] | None = None) -> int:
 
     tag_suffix = str(args.tag_suffix or '').strip()
 
-    # Identify updated routes to add "[업데이트]" tag
-    updated_routes = {route_input} if route_input else set()
-    if not updated_routes:
-        check_path = repo_path('state/get_check.json')
-        if check_path.exists():
-            try:
-                check_payload = load_json_dict(check_path, '')
-                routes_payload = check_payload.get('routes', {})
-                if isinstance(routes_payload, dict):
-                    for r_name, r_info in routes_payload.items():
-                        if isinstance(r_info, dict) and r_info.get('changed'):
-                            updated_routes.add(r_name)
-            except Exception:
-                pass
-
-    # Build Discord summary of route versions
+    # Build Discord summary of route versions grouped by version/revision and sorted descending
     ROUTE_DISPLAY_NAMES = {
         'INT_STEAM': 'Steam 글로벌 버전',
         'CN_STEAM': 'Steam 중국 버전',
@@ -118,7 +103,7 @@ def main(argv: list[str] | None = None) -> int:
         'CN_BILIBILI': '빌리빌리 PC 버전',
     }
 
-    summary_lines = []
+    entries = []
     ordered_routes = ['INT_STEAM', 'CN_STEAM', 'INT_ANDROID', 'CN_BILIBILI']
     for r_name in sorted(routes.keys()):
         if r_name not in ordered_routes:
@@ -134,10 +119,27 @@ def main(argv: list[str] | None = None) -> int:
         r_ver = str(route_payload.get('version', '')).strip() or version
         r_display = ROUTE_DISPLAY_NAMES.get(r_name, r_name)
         r_full_version = f"v{r_ver}.{r_rev}{tag_suffix}"
-        update_flag = " [업데이트]" if r_name in updated_routes else ""
-        summary_lines.append(f"{r_display} - {r_full_version}{update_flag}")
+        entries.append((r_display, r_full_version, r_rev, r_ver))
 
-    routes_summary = '\n'.join(summary_lines)
+    # Group by full version
+    groups = {}
+    version_keys = {}
+    for r_display, r_full_version, r_rev, r_ver in entries:
+        if r_full_version not in groups:
+            groups[r_full_version] = []
+        groups[r_full_version].append(f"{r_display} - {r_full_version}")
+        version_keys[r_full_version] = (r_ver, sort_revision_key(r_rev))
+
+    # Sort groups descending by version and revision
+    sorted_full_versions = sorted(
+        groups.keys(),
+        key=lambda fv: version_keys[fv],
+        reverse=True
+    )
+
+    # Combine with blank lines between groups
+    group_blocks = ['\n'.join(groups[fv]) for fv in sorted_full_versions]
+    routes_summary = '\n\n'.join(group_blocks)
     tag = f'v{version}.{revision}{tag_suffix}'
     kst = timezone(timedelta(hours=9))
     finished_at_kst = datetime.now(timezone.utc).astimezone(kst).strftime('%Y-%m-%d %H:%M:%S')
