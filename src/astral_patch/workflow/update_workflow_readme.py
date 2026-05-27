@@ -81,6 +81,15 @@ def main(argv: list[str] | None = None) -> int:
     lines.append('## Latest Data Check')
     lines.append('### Finished at')
     lines.append(f'- {check_finished}')
+
+    import os
+    server_url = os.environ.get('GITHUB_SERVER_URL', 'https://github.com')
+    repo = os.environ.get('GITHUB_REPOSITORY', '')
+    run_id = os.environ.get('GITHUB_RUN_ID', '')
+    if repo and run_id:
+        run_url = f"{server_url}/{repo}/actions/runs/{run_id}"
+        lines.append(f'- [Action Run]({run_url})')
+
     lines.append('### Result')
     lines.append(f'- {check_result}')
     lines.append('')

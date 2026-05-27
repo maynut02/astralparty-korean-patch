@@ -28,6 +28,10 @@ inputs:
     description: Changelog page URL
     required: false
     default: https://astral.maynutlab.com/editor/changelog
+  routes_summary:
+    description: Summary list of route versions to display in notification
+    required: false
+    default: ""
 
 runs:
   using: composite
@@ -42,6 +46,7 @@ runs:
         AUTOPATCHER_URL: ${{ inputs.autopatcher_url }}
         AUTOPATCH_PAGE_URL: ${{ inputs.autopatch_page_url }}
         CHANGELOG_URL: ${{ inputs.changelog_url }}
+        ROUTES_SUMMARY: ${{ inputs.routes_summary }}
       run: |
         set -euo pipefail
 
@@ -59,45 +64,58 @@ runs:
           EMBED_DESCRIPTION="${EMBED_DESCRIPTION}"$'\n'"⚠ Pre-release 버전에서는 일부 번역되지 않은 요소가 존재할 수 있습니다."
         fi
 
+        # Base fields containing download link
+        FIELDS="$(jq -n \
+          --arg homepage_url "${HOMEPAGE_URL}" \
+          '[
+            {
+              name: "다운로드",
+              value: ("[다운로드 페이지](" + $homepage_url + ")")
+            }
+          ]')"
+
+        # Add platform version summary if ROUTES_SUMMARY is provided
+        if [ -n "${ROUTES_SUMMARY:-}" ]; then
+          FIELDS="$(echo "${FIELDS}" | jq --arg rs "${ROUTES_SUMMARY}" '. + [{name: "패치 플랫폼 정보", value: $rs}]')"
+        fi
+
+        # Append auto patcher and info links
+        FIELDS="$(echo "${FIELDS}" | jq \
+          --arg workflow_run_url "${WORKFLOW_RUN_URL}" \
+          --arg release_url "${RELEASE_URL}" \
+          --arg changelog_url "${CHANGELOG_URL}" \
+          '. + [
+            {
+              name: "자동 패치 모드 실행",
+              value: (
+                "-# ⓘ 프로그램이 설치된 상태에서만 사용 가능합니다.\n" +
+                "[Steam 글로벌 버전](https://astral.maynutlab.com/autopatch/patch/INT_STEAM)\n" +
+                "[Steam 중국 버전](https://astral.maynutlab.com/autopatch/patch/CN_STEAM)\n" +
+                "[빌리빌리 PC 버전](https://astral.maynutlab.com/autopatch/patch/CN_BILIBILI)"
+              )
+            },
+            {
+              name: "정보",
+              value: (
+                "[작업 상태](" + $workflow_run_url + ") | " +
+                "[릴리즈 정보](" + $release_url + ") | " +
+                "[변경 내용](" + $changelog_url + ")"
+              )
+            }
+          ]')"
+
         PAYLOAD="$(jq -n \
           --arg tag "${TAG}" \
-          --arg release_url "${RELEASE_URL}" \
-          --arg workflow_run_url "${WORKFLOW_RUN_URL}" \
-          --arg autopatcher_url "${AUTOPATCHER_URL}" \
-          --arg autopatch_page_url "${AUTOPATCH_PAGE_URL}" \
-          --arg homepage_url "${HOMEPAGE_URL}" \
-          --arg changelog_url "${CHANGELOG_URL}" \
           --arg timestamp "${TIMESTAMP}" \
           --arg description "${EMBED_DESCRIPTION}" \
+          --argjson fields "${FIELDS}" \
           '{
             content: ("새로운 한글패치 버전이 등록되었습니다!\n`" + $tag + "`\n@everyone"),
             embeds: [
               {
                 description: $description,
                 color: 15531954,
-                fields: [
-                  {
-                    name: "다운로드",
-                    value: ("[다운로드 페이지](" + $homepage_url + ")")
-                  },
-                  {
-                    name: "자동 패치 모드 실행",
-                    value: (
-                      "-# ⓘ 프로그램이 설치된 상태에서만 사용 가능합니다.\n" +
-                      "[Steam 글로벌 버전](https://astral.maynutlab.com/autopatch/patch/INT_STEAM)\n" +
-                      "[Steam 중국 버전](https://astral.maynutlab.com/autopatch/patch/CN_STEAM)\n" +
-                      "[빌리빌리 PC 버전](https://astral.maynutlab.com/autopatch/patch/CN_BILIBILI)"
-                    )
-                  },
-                  {
-                    name: "정보",
-                    value: (
-                      "[작업 상태](" + $workflow_run_url + ") | " +
-                      "[릴리즈 정보](" + $release_url + ") | " +
-                      "[변경 내용](" + $changelog_url + ")"
-                    )
-                  }
-                ],
+                fields: $fields,
                 timestamp: $timestamp
               }
             ],

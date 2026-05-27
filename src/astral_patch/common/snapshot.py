@@ -89,3 +89,28 @@ def find_bundle_name_in_report(
                 return bundle_name
 
     raise ValueError(not_found_message)
+
+
+def sort_revision_key(value: str) -> tuple[int, int | str]:
+    if value.isdigit():
+        return (0, int(value))
+    return (1, value)
+
+
+def resolve_highest_revision(payload: dict[str, Any]) -> str:
+    routes = payload.get("routes", {})
+    if not isinstance(routes, dict):
+        return ""
+
+    candidates = []
+    for route_payload in routes.values():
+        if not isinstance(route_payload, dict):
+            continue
+        raw = str(route_payload.get("revision", "")).strip()
+        if raw:
+            candidates.append(raw)
+
+    if not candidates:
+        return ""
+
+    return sorted(candidates, key=sort_revision_key)[-1]

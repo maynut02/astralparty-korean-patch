@@ -16,6 +16,7 @@ from ..common.snapshot import (
     load_snapshot_payload,
     resolve_route_scope,
     resolve_snapshot_file,
+    resolve_highest_revision,
 )
 from ..common.validate import validate_table_name
 from ..config import (
@@ -596,9 +597,12 @@ def main(argv: list[str] | None = None) -> int:
     if version_arg and revision_arg:
         scope = _find_latest_scope(input_root, version_arg, revision_arg)
         scope_source = "cli"
+        highest_revision = scope.revision
     else:
         scope = _load_scope_from_snapshot(snapshot_file, input_root, DEFAULT_ROUTE)
         scope_source = "snapshot"
+        snapshot_payload = load_snapshot_payload(snapshot_file)
+        highest_revision = resolve_highest_revision(snapshot_payload) or scope.revision
 
     bundle_name = _find_strcard_bundle(scope.report_path)
     bundle_path = scope.scope_dir / bundle_name
@@ -623,7 +627,7 @@ def main(argv: list[str] | None = None) -> int:
     report_path = Path(str(args.report_file or DEFAULT_STR_REPORT_FILE))
     report_path.parent.mkdir(parents=True, exist_ok=True)
 
-    asset_version = f"{scope.version}.{scope.revision}"
+    asset_version = f"{scope.version}.{highest_revision}"
     db_apply: dict[str, Any] = {
         "enabled": bool(args.upload_db),
         "asset_version": asset_version,

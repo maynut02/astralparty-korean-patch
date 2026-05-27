@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Any
 from xml.etree import ElementTree as ET
 
-from ..common.snapshot import load_snapshot_payload, resolve_route_scope, resolve_snapshot_file
+from ..common.snapshot import load_snapshot_payload, resolve_route_scope, resolve_snapshot_file, resolve_highest_revision
 from ..common.validate import validate_table_name
 from ..config import (
     DEFAULT_GET_OUTPUT_DIR,
@@ -485,8 +485,11 @@ def main(argv: list[str] | None = None) -> int:
     if version_arg and revision_arg:
         version = version_arg
         revision = revision_arg
+        highest_revision = revision
     else:
         version, revision = _load_scope_from_snapshot(snapshot_file, DEFAULT_ROUTE)
+        snapshot_payload = load_snapshot_payload(snapshot_file)
+        highest_revision = resolve_highest_revision(snapshot_payload) or revision
 
     input_scope_dir = Path(args.input_root) / DEFAULT_ROUTE / version / revision
 
@@ -564,7 +567,7 @@ def main(argv: list[str] | None = None) -> int:
             data_table=data_table,
             logs_table=logs_table,
             actions=actions,
-            asset_version=f"{version}.{revision}",
+            asset_version=f"{version}.{highest_revision}",
             log_source=args.log_source,
             log_status=args.log_status,
         )

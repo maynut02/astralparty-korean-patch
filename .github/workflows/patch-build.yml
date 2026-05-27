@@ -179,6 +179,7 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           tag: ${{ steps.release_meta.outputs.tag }}
+          routes_summary: ${{ steps.release_meta.outputs.routes_summary }}
 
       - name: Delete run artifacts
         if: ${{ success() }}
