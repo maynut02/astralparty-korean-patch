@@ -22,6 +22,15 @@ def build_release_body(
         lines.append('')
     lines.append('### Release Date')
     lines.append(f'- {finished_at_kst}')
+
+    import os
+    server_url = os.environ.get('GITHUB_SERVER_URL', 'https://github.com')
+    repo = os.environ.get('GITHUB_REPOSITORY', '')
+    run_id = os.environ.get('GITHUB_RUN_ID', '')
+    if repo and run_id:
+        run_url = f"{server_url}/{repo}/actions/runs/{run_id}"
+        lines.append(f'- [Action Run]({run_url})')
+
     lines.append('')
     lines.append('### Version')
     lines.append('|route|version|revision|')
@@ -126,7 +135,7 @@ def main(argv: list[str] | None = None) -> int:
         r_display = ROUTE_DISPLAY_NAMES.get(r_name, r_name)
         r_full_version = f"v{r_ver}.{r_rev}{tag_suffix}"
         update_flag = " [업데이트]" if r_name in updated_routes else ""
-        summary_lines.append(f"- {r_display} - {r_full_version}{update_flag}")
+        summary_lines.append(f"{r_display} - {r_full_version}{update_flag}")
 
     routes_summary = '\n'.join(summary_lines)
     tag = f'v{version}.{revision}{tag_suffix}'
