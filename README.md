@@ -12,6 +12,7 @@
 |route|version|revision|report|
 |-----|-------|--------|------|
 |CN_BILIBILI|3.1.0|034|[report](/output_get/CN_BILIBILI/3.1.0/034/report.json)|
+|CN_STEAM|3.1.0|034|[report](/output_get/CN_STEAM/3.1.0/034/report.json)|
 |INT_ANDROID|3.1.0|034|[report](/output_get/INT_ANDROID/3.1.0/034/report.json)|
 |INT_STEAM|3.1.0|034|[report](/output_get/INT_STEAM/3.1.0/034/report.json)|
 

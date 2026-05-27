@@ -16,6 +16,11 @@
       "revision": "034",
       "report_path": "output_get/INT_STEAM/3.1.0/034/report.json",
       "failed_count": 0
+    },
+    "CN_STEAM": {
+      "revision": "034",
+      "report_path": "output_get/CN_STEAM/3.1.0/034/report.json",
+      "failed_count": 0
     }
   }
 }
