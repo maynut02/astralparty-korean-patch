@@ -76,7 +76,7 @@ runs:
 
         # Add platform version summary if ROUTES_SUMMARY is provided
         if [ -n "${ROUTES_SUMMARY:-}" ]; then
-          FIELDS="$(echo "${FIELDS}" | jq --arg rs "${ROUTES_SUMMARY}" '. + [{name: "패치 플랫폼 정보", value: $rs}]')"
+          FIELDS="$(echo "${FIELDS}" | jq --arg rs "${ROUTES_SUMMARY}" '. + [{name: "버전 정보", value: $rs}]')"
         fi
 
         # Append auto patcher and info links
