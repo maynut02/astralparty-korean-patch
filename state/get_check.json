@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-05-27T05:40:27Z",
+  "checked_at": "2026-05-27T05:44:40Z",
   "version": "3.1.0",
   "routes": {
     "INT_STEAM": {
@@ -11,9 +11,9 @@
       "report_path": "output_get/INT_STEAM/3.1.0/034/report.json"
     },
     "INT_ANDROID": {
-      "bundle_count": 5404,
-      "shard_count": 11,
-      "changed": true,
+      "bundle_count": 0,
+      "shard_count": 0,
+      "changed": false,
       "version": "3.1.0",
       "revision": "035",
       "report_path": "output_get/INT_ANDROID/3.1.0/035/report.json"
@@ -35,6 +35,6 @@
       "report_path": "output_get/CN_STEAM/3.1.0/034/report.json"
     }
   },
-  "has_changes": true,
+  "has_changes": false,
   "int_steam_changed": false
 }
