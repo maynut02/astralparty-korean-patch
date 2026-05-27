@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-05-23T04:12:51Z",
+  "generated_at": "2026-05-27T05:43:37Z",
   "version": "3.1.0",
   "routes": {
     "CN_BILIBILI": {
@@ -13,8 +13,8 @@
       "failed_count": 0
     },
     "INT_ANDROID": {
-      "revision": "034",
-      "report_path": "output_get/INT_ANDROID/3.1.0/034/report.json",
+      "revision": "035",
+      "report_path": "output_get/INT_ANDROID/3.1.0/035/report.json",
       "failed_count": 0
     },
     "INT_STEAM": {
