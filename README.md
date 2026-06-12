@@ -1,7 +1,7 @@
 ## Latest Data Check
 ### Finished at
-- 2026-06-13 03:11:27
-- [Action Run](https://github.com/maynut02/astralparty-korean-patch/actions/runs/27434112220)
+- 2026-06-13 03:20:24
+- [Action Run](https://github.com/maynut02/astralparty-korean-patch/actions/runs/27434625992)
 ### Result
 - unchanged
 
