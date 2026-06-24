@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-06-24T04:10:28Z",
+  "checked_at": "2026-06-24T04:13:56Z",
   "version": "3.1.0",
   "routes": {
     "INT_STEAM": {
@@ -19,9 +19,9 @@
       "report_path": "output_get/INT_ANDROID/3.1.0/035/report.json"
     },
     "CN_BILIBILI": {
-      "bundle_count": 829,
-      "shard_count": 2,
-      "changed": true,
+      "bundle_count": 0,
+      "shard_count": 0,
+      "changed": false,
       "version": "3.1.0",
       "revision": "035",
       "report_path": "output_get/CN_BILIBILI/3.1.0/035/report.json"
@@ -35,6 +35,6 @@
       "report_path": "output_get/CN_STEAM/3.1.0/034/report.json"
     }
   },
-  "has_changes": true,
+  "has_changes": false,
   "int_steam_changed": false
 }
