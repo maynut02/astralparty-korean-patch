@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-05-27T05:43:37Z",
+  "generated_at": "2026-06-24T04:12:59Z",
   "version": "3.1.0",
   "routes": {
     "CN_BILIBILI": {
-      "revision": "034",
-      "report_path": "output_get/CN_BILIBILI/3.1.0/034/report.json",
+      "revision": "035",
+      "report_path": "output_get/CN_BILIBILI/3.1.0/035/report.json",
       "failed_count": 0
     },
     "CN_STEAM": {
