@@ -107,6 +107,7 @@ class TaskPatchSpec:
 @dataclass
 class TaskRule:
     source: str
+    patch_dir: str
     patches: list[TaskPatchSpec]
 
 
@@ -137,7 +138,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument(
         "--origin-root",
         default=FILES_ORIGIN_DIR.as_posix(),
-        help="Base root for manually collected route bundles (StandaloneWindows64)",
+        help="Base root for manually collected route files (StandaloneWindows64 files and data.unity3d)",
     )
 
     parser.add_argument(
@@ -997,6 +998,8 @@ def _normalize_task_source(raw: Any) -> str:
         return "AssetBundles"
     if text in {"standalonewindows64", "origin_sw64", "origin"}:
         return "StandaloneWindows64"
+    if text == "data.unity3d":
+        return "data.unity3d"
     raise ValueError(f"Unsupported task source: {raw}")
 
 
@@ -1119,6 +1122,7 @@ def _build_tasks_from_legacy_payload(payload: dict[str, Any], default_lang_text:
         tasks.append(
             TaskRule(
                 source="AssetBundles",
+                patch_dir="",
                 patches=specs,
             )
         )
@@ -1127,6 +1131,7 @@ def _build_tasks_from_legacy_payload(payload: dict[str, Any], default_lang_text:
         tasks.append(
             TaskRule(
                 source="AssetBundles",
+                patch_dir="",
                 patches=[
                     TaskPatchSpec(
                         action="patch_lang_from_db",
@@ -1145,6 +1150,7 @@ def _build_tasks_from_legacy_payload(payload: dict[str, Any], default_lang_text:
         tasks.append(
             TaskRule(
                 source="AssetBundles",
+                patch_dir="",
                 patches=[
                     TaskPatchSpec(
                         action="patch_str_from_db",
@@ -1165,6 +1171,7 @@ def _build_tasks_from_legacy_payload(payload: dict[str, Any], default_lang_text:
 def _load_task_rules(payload: dict[str, Any]) -> list[TaskRule]:
     default_lang_text = str(payload.get("lang_text", "")).strip()
     default_str_target = str(payload.get("str_target", "")).strip().lower()
+    patch_dir = str(payload.get("patch", "")).strip()
     tasks_raw = payload.get("tasks")
 
     if not isinstance(tasks_raw, list):
@@ -1186,7 +1193,7 @@ def _load_task_rules(payload: dict[str, Any]) -> list[TaskRule]:
             patches.append(_build_patch_spec(patch_item, default_lang_text, default_str_target))
 
         if patches:
-            tasks.append(TaskRule(source=source, patches=patches))
+            tasks.append(TaskRule(source=source, patch_dir=patch_dir, patches=patches))
 
     return tasks
 
@@ -1248,6 +1255,15 @@ def _source_input_dir(task: TaskRule, input_scope_dir: Path, origin_root: Path, 
     route_root = origin_root / route
     nested_root = route_root / "StandaloneWindows64"
 
+    if task.source == "data.unity3d":
+        direct_file = route_root / "data.unity3d"
+        if direct_file.exists():
+            return direct_file
+        nested_file = nested_root / "data.unity3d"
+        if nested_file.exists():
+            return nested_file
+        return direct_file
+
     if route_root.exists():
         # Prefer direct files_origin/<ROUTE>/*.bundle layout.
         if any(route_root.glob("*.bundle")):
@@ -1260,6 +1276,41 @@ def _source_input_dir(task: TaskRule, input_scope_dir: Path, origin_root: Path, 
         return nested_root
 
     return route_root
+
+
+def _collect_task_input_paths(task: TaskRule, source_input_path: Path, bundle_filters: set[str]) -> list[Path]:
+    if task.source == "data.unity3d":
+        paths = [source_input_path] if source_input_path.exists() and source_input_path.is_file() else []
+    elif task.source == "AssetBundles":
+        paths = sorted(path for path in source_input_path.glob("*.bundle") if path.is_file())
+    else:
+        paths = sorted(
+            path
+            for path in source_input_path.iterdir()
+            if path.is_file() and path.name.lower() != "data.unity3d"
+        )
+
+    if bundle_filters:
+        paths = [path for path in paths if path.name in bundle_filters]
+    return paths
+
+
+def _task_output_path(task: TaskRule, output_scope_dir: Path, bundle_path: Path, assetbundle_m_name: str) -> Path:
+    if task.source == "AssetBundles":
+        if not assetbundle_m_name:
+            raise ValueError(f"AssetBundle m_Name not found: {bundle_path}")
+        return output_scope_dir / task.source / assetbundle_m_name / bundle_path.stem / "__data"
+
+    if not task.patch_dir:
+        raise ValueError(f"Rule field 'patch' is required for source={task.source}")
+
+    patch_root = output_scope_dir / task.patch_dir
+    if task.source == "StandaloneWindows64":
+        return patch_root / "StreamingAssets" / "aa" / "StandaloneWindows64" / bundle_path.name
+    if task.source == "data.unity3d":
+        return patch_root / "data.unity3d"
+
+    raise ValueError(f"Unsupported task source: {task.source}")
 
 
 def _patch_bundle_for_task(
@@ -1354,15 +1405,12 @@ def _patch_bundle_for_task(
 
         result.status = "patched"
 
-        if task.source == "AssetBundles":
-            if not assetbundle_m_name:
-                raise ValueError(f"AssetBundle m_Name not found: {bundle_path}")
-            source_base = output_scope_dir / task.source
-            source_base = source_base / assetbundle_m_name
-            output_path = source_base / bundle_path.stem / "__data"
-        else:
-            source_base = output_scope_dir / task.source
-            output_path = source_base / bundle_path.name
+        output_path = _task_output_path(
+            task=task,
+            output_scope_dir=output_scope_dir,
+            bundle_path=bundle_path,
+            assetbundle_m_name=assetbundle_m_name,
+        )
 
         result.output_data_path = output_path.as_posix()
 
@@ -1479,15 +1527,13 @@ def _run_single_route(
     skipped_sources: list[str] = []
 
     for task in tasks:
-        source_input_dir = _source_input_dir(task, input_scope_dir, origin_root, route)
-        if not source_input_dir.exists():
+        source_input_path = _source_input_dir(task, input_scope_dir, origin_root, route)
+        if not source_input_path.exists():
             reason = _describe_task_skip_reason(task)
-            skipped_sources.append(f"{task.source}:{source_input_dir.as_posix()}(missing; reason={reason})")
+            skipped_sources.append(f"{task.source}:{source_input_path.as_posix()}(missing; reason={reason})")
             continue
 
-        bundle_paths = sorted(source_input_dir.glob("*.bundle"))
-        if bundle_filters:
-            bundle_paths = [path for path in bundle_paths if path.name in bundle_filters]
+        bundle_paths = _collect_task_input_paths(task, source_input_path, bundle_filters)
 
         if (
             task.source == "AssetBundles"
@@ -1496,7 +1542,7 @@ def _run_single_route(
             and all(spec.action == "patch_str_from_db" for spec in task.patches)
             and str_bundle_name
         ):
-            specific_path = source_input_dir / str_bundle_name
+            specific_path = source_input_path / str_bundle_name
             bundle_paths = [specific_path] if specific_path.exists() else []
 
         for bundle_path in bundle_paths:

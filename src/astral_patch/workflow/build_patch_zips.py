@@ -35,10 +35,11 @@ def build_zip_for_route(
     file_suffix: str,
 ) -> Path | None:
     base_dir = output_root / route / version / revision
-    source_dirs = [base_dir / 'AssetBundles', base_dir / 'StandaloneWindows64']
+    source_dirs = [base_dir / 'AssetBundles']
+    source_dirs.extend(sorted(path for path in base_dir.glob('*_Data') if path.is_dir()))
     existing = [d for d in source_dirs if d.exists() and d.is_dir()]
     if not existing:
-        print(f'[zip] skip route={route}: no AssetBundles/StandaloneWindows64 in {base_dir.as_posix()}')
+        print(f'[zip] skip route={route}: no AssetBundles/*_Data in {base_dir.as_posix()}')
         return None
 
     zip_dir.mkdir(parents=True, exist_ok=True)
