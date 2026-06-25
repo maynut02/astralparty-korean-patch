@@ -22,7 +22,7 @@
       ]
     },
     {
-      "source": "StandaloneWindows64",
+      "source": "AssetBundles",
       "patches": [
         {
           "asset_kind": "MonoBehaviour",
@@ -36,6 +36,12 @@
           "replace_file": "AstralCJK_KO_CN SDF Atlas.png",
           "action": "replace_file"
         }
+      ]
+    },
+    {
+      "source": "StandaloneWindows64",
+      "patches": [
+        
       ]
     },
     {
