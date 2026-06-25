@@ -40,20 +40,7 @@
     },
     {
       "source": "StandaloneWindows64",
-      "patches": [
-        {
-          "asset_kind": "MonoBehaviour",
-          "asset_name": "JingNanBoBoHei_TMP",
-          "replace_file": "AstralCJK_KO_CN SDF.dat",
-          "action": "replace_file"
-        },
-        {
-          "asset_kind": "Texture2D",
-          "asset_name": "JingNanBoBoHei_TMP Atlas",
-          "replace_file": "AstralCJK_KO_CN SDF Atlas.png",
-          "action": "replace_file"
-        }
-      ]
+      "patches": []
     },
     {
       "source": "data.unity3d",

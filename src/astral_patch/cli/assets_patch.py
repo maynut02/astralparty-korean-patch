@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import struct
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict, dataclass
@@ -56,6 +57,7 @@ except ImportError as exc:  # pragma: no cover
 AssetKind = Literal["font", "texture2d", "monobehaviour"]
 StrTargetField = Literal["cn_s", "en", "jp", "cn_t"]
 LANG_NAME_KEY_BY_TARGET: dict[str, int] = {"en": 1410, "jp": 1422, "cn_s": 1440, "cn_t": 1441}
+UNITY_CACHE_HASH_RE = re.compile(r"^[0-9a-fA-F]{32}$")
 
 
 def _resolve_snapshot_file(path: Path) -> Path:
@@ -1295,11 +1297,26 @@ def _collect_task_input_paths(task: TaskRule, source_input_path: Path, bundle_fi
     return paths
 
 
-def _task_output_path(task: TaskRule, output_scope_dir: Path, bundle_path: Path, assetbundle_m_name: str) -> Path:
+def _unity_cache_bundle_dir_name(route: str, bundle_path: Path) -> str:
+    stem = bundle_path.stem
+    if route in {"CN_BILIBILI", "CN_STEAM"} and "_" in stem:
+        suffix = stem.rsplit("_", 1)[-1]
+        if UNITY_CACHE_HASH_RE.match(suffix):
+            return suffix
+    return stem
+
+
+def _task_output_path(
+    task: TaskRule,
+    output_scope_dir: Path,
+    route: str,
+    bundle_path: Path,
+    assetbundle_m_name: str,
+) -> Path:
     if task.source == "AssetBundles":
         if not assetbundle_m_name:
             raise ValueError(f"AssetBundle m_Name not found: {bundle_path}")
-        return output_scope_dir / task.source / assetbundle_m_name / bundle_path.stem / "__data"
+        return output_scope_dir / task.source / assetbundle_m_name / _unity_cache_bundle_dir_name(route, bundle_path) / "__data"
 
     if not task.patch_dir:
         raise ValueError(f"Rule field 'patch' is required for source={task.source}")
@@ -1316,6 +1333,7 @@ def _task_output_path(task: TaskRule, output_scope_dir: Path, bundle_path: Path,
 def _patch_bundle_for_task(
     bundle_path: Path,
     output_scope_dir: Path,
+    route: str,
     task: TaskRule,
     replacement_files: dict[str, bytes | Any],
     dry_run: bool,
@@ -1408,6 +1426,7 @@ def _patch_bundle_for_task(
         output_path = _task_output_path(
             task=task,
             output_scope_dir=output_scope_dir,
+            route=route,
             bundle_path=bundle_path,
             assetbundle_m_name=assetbundle_m_name,
         )
@@ -1549,6 +1568,7 @@ def _run_single_route(
             result = _patch_bundle_for_task(
                 bundle_path=bundle_path,
                 output_scope_dir=output_scope_dir,
+                route=route,
                 task=task,
                 replacement_files=replacement_payloads,
                 dry_run=bool(args.dry_run),
