@@ -103,7 +103,7 @@ def main(argv: list[str] | None = None) -> int:
         host = resolve_host(route)
         route_param = resolve_hotaddress_route_param(route)
         get_url = (
-            f'http://{host}:7878/api/hotaddress/get'
+            f'http://{host}:7878/api/hotaddressExtend/get'
             f'?route={urllib.parse.quote(route_param)}&version={urllib.parse.quote(version)}'
         )
         get_payload = fetch_json(get_url)

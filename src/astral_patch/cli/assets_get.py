@@ -31,7 +31,7 @@ from ..config import (
 )
 from ..paths import resolve_repo_path
 
-HOTADDRESS_PATH_TEMPLATE = "http://{host}:7878/api/hotaddress/get?route={route}&version={version}"
+HOTADDRESS_PATH_TEMPLATE = "http://{host}:7878/api/hotaddressExtend/get?route={route}&version={version}"
 APP_WEB_PREFIX = "{App.WebServerConfig.Path}/"
 TARGET_TEXTASSET_NAMES = {
     "Simplified Chinese",
