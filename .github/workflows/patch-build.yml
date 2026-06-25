@@ -7,6 +7,14 @@ on:
         description: "Optional route (e.g. INT_STEAM). Leave empty to process all routes from rules/snapshot."
         required: false
         default: ""
+      release_channel:
+        description: "Release channel"
+        required: true
+        type: choice
+        default: "official"
+        options:
+          - "official"
+          - "pre"
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
@@ -119,32 +127,45 @@ jobs:
           rsync -a _incoming/patched/output_patch/ output_patch/
           cp _incoming/patched/state/get_report.json state/get_report.json
 
-      - name: Build release zip files (official)
+      - name: Build release zip files
         run: |
           set -euo pipefail
+          FILE_SUFFIX=""
+          if [ "${{ inputs.release_channel }}" = "pre" ]; then
+            FILE_SUFFIX="-pre"
+          fi
+
           if [ -n "${{ inputs.route }}" ]; then
             astral-workflow build-patch-zips \
               --snapshot-file state/get_report.json \
               --output-root output_patch \
               --zip-dir release_zips \
-              --route "${{ inputs.route }}"
+              --route "${{ inputs.route }}" \
+              --file-suffix "${FILE_SUFFIX}"
           else
             astral-workflow build-patch-zips \
               --snapshot-file state/get_report.json \
               --output-root output_patch \
-              --zip-dir release_zips
+              --zip-dir release_zips \
+              --file-suffix "${FILE_SUFFIX}"
           fi
 
       - name: Prepare release metadata
         id: release_meta
         run: |
           set -euo pipefail
+          TAG_SUFFIX=""
+          if [ "${{ inputs.release_channel }}" = "pre" ]; then
+            TAG_SUFFIX="-pre"
+          fi
+
           astral-workflow build-release-meta \
             --snapshot-file state/get_report.json \
             --route "${{ inputs.route }}" \
+            --tag-suffix "${TAG_SUFFIX}" \
             --github-output "$GITHUB_OUTPUT"
 
-      - name: Create or update GitHub Release (official)
+      - name: Create or update GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REPO: ${{ github.repository }}
@@ -168,12 +189,14 @@ jobs:
           RELEASE_ID="$(gh api "repos/${REPO}/releases/tags/${TAG}" --jq '.id')"
           gh api --method PATCH "repos/${REPO}/releases/${RELEASE_ID}" -F prerelease=false -F draft=false >/dev/null
 
-          PRE_TAG="${TAG}-pre"
-          if gh release view "${PRE_TAG}" >/dev/null 2>&1; then
-            gh release delete "${PRE_TAG}" --yes
+          if [ "${{ inputs.release_channel }}" = "official" ]; then
+            PRE_TAG="${TAG}-pre"
+            if gh release view "${PRE_TAG}" >/dev/null 2>&1; then
+              gh release delete "${PRE_TAG}" --yes
+            fi
           fi
 
-      - name: Notify Discord (official)
+      - name: Notify Discord
         if: ${{ success() }}
         uses: ./.github/actions/notify-discord-release
         with:
