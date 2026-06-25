@@ -141,7 +141,7 @@ jobs:
           fi
 
           if [ "${{ inputs.release_channel }}" = "pre" ]; then
-            ZIP_ARGS+=(--file-suffix "-pre")
+            ZIP_ARGS+=(--file-suffix=-pre)
           fi
 
           astral-workflow build-patch-zips "${ZIP_ARGS[@]}"
@@ -159,7 +159,7 @@ jobs:
           fi
 
           if [ "${{ inputs.release_channel }}" = "pre" ]; then
-            META_ARGS+=(--tag-suffix "-pre")
+            META_ARGS+=(--tag-suffix=-pre)
           fi
 
           astral-workflow build-release-meta "${META_ARGS[@]}" --github-output "$GITHUB_OUTPUT"
