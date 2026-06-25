@@ -19,8 +19,8 @@ ROUTE_HOST_BY_PREFIX = {
     "CN_": "se-web-cn.feimogames.com",
 }
 HOTADDRESS_ROUTE_PARAM_BY_ROUTE = {
-    "CN_BILIBILI": "110001957",
-    "CN_STEAM": "110001933",
+    "CN_BILIBILI": "CN_BILIBILI",
+    "CN_STEAM": "CN_STEAM",
 }
 
 FILES_KO_DIR = Path("files_ko")
@@ -33,7 +33,7 @@ FILES_ORIGIN_DIR = Path("files_origin")
 # http://selist.feimogames.com:7878/api/hotaddressExtend/get?route=INT_ANDROID&version=3.1.0
 
 # CN_STEAM(110001933)
-# http://se-web-cn.feimogames.com:7878/api/hotaddressExtend/get?route=110001933&version=3.1.0
+# http://se-web-cn.feimogames.com:7878/api/hotaddressExtend/get?route=CN_STEAM&version=3.1.0
 
 # CN_BILIBILI(110001957)
-# http://se-web-cn.feimogames.com:7878/api/hotaddressExtend/get?route=110001957&version=3.1.0
+# http://se-web-cn.feimogames.com:7878/api/hotaddressExtend/get?route=CN_BILIBILI&version=3.1.0
