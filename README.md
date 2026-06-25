@@ -1,24 +1,24 @@
 ## Latest Data Check
 ### Finished at
-- 2026-06-25 15:40:27
-- [Action Run](https://github.com/maynut02/astralparty-korean-patch/actions/runs/28151864649)
+- 2026-06-25 15:53:46
+- [Action Run](https://github.com/maynut02/astralparty-korean-patch/actions/runs/28152462354)
 ### Result
-- unchanged
+- changed
 
 ## Latest Data Sync
 ### Date
-- 2026-05-22 19:23:32
+- 2026-06-25 15:56:47
 
 ### Version
 |route|version|revision|report|
 |-----|-------|--------|------|
-|CN_BILIBILI|3.1.0|034|[report](/output_get/CN_BILIBILI/3.1.0/034/report.json)|
-|CN_STEAM|3.1.0|034|[report](/output_get/CN_STEAM/3.1.0/034/report.json)|
-|INT_ANDROID|3.1.0|034|[report](/output_get/INT_ANDROID/3.1.0/034/report.json)|
-|INT_STEAM|3.1.0|034|[report](/output_get/INT_STEAM/3.1.0/034/report.json)|
+|CN_BILIBILI|3.2.0|010|[report](/output_get/CN_BILIBILI/3.2.0/010/report.json)|
+|CN_STEAM|3.2.0|010|[report](/output_get/CN_STEAM/3.2.0/010/report.json)|
+|INT_ANDROID|3.2.0|010|[report](/output_get/INT_ANDROID/3.2.0/010/report.json)|
+|INT_STEAM|3.2.0|010|[report](/output_get/INT_STEAM/3.2.0/010/report.json)|
 
 ### Data Sync
 |type|batch_id|report|
 |----|--------|------|
-|Lang|ed0da548-5eb0-4ed1-ad18-2e3b91090006|[report](/state/lang_report.json)|
-|STR|8720e293-779f-4a11-b9b5-e04e62b9bc9b|[report](/state/str_report.json)|
+|Lang|922c0d10-e2f9-4829-906e-596c9a0c865b|[report](/state/lang_report.json)|
+|STR|3b283b04-9fe3-4ea7-8140-eb32186e3842|[report](/state/str_report.json)|
