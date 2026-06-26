@@ -2,21 +2,21 @@
   "summary": {
     "route": "INT_STEAM",
     "version": "3.2.0",
-    "revision": "011",
+    "revision": "012",
     "scope_source": "snapshot",
     "snapshot_file": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/state/get_report.json",
-    "scope_dir": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.2.0/011",
-    "report_source": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.2.0/011/report.json",
-    "bundle_name": "20705319363e60f47bd52657d69c9448.bundle",
-    "bundle_path": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.2.0/011/20705319363e60f47bd52657d69c9448.bundle",
+    "scope_dir": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.2.0/012",
+    "report_source": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.2.0/012/report.json",
+    "bundle_name": "b41ec69019ce38749b8a7ea64e0bdd35.bundle",
+    "bundle_path": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.2.0/012/b41ec69019ce38749b8a7ea64e0bdd35.bundle",
     "asset_prefix": "STR",
     "categories_count": 59,
     "extracted_entry_count": 7087,
     "db_row_count": 7087,
     "missing_in_db_count": 0,
     "db_only_count": 0,
-    "mismatch_row_count": 6,
-    "mismatch_field_count": 9,
+    "mismatch_row_count": 1,
+    "mismatch_field_count": 1,
     "upload_db": true,
     "data_table": "astral_data",
     "logs_table": "astral_logs"
@@ -26,79 +26,23 @@
     "db_only": [],
     "mismatches": [
       {
-        "category": "STRCharacter",
-        "id": 1130,
-        "field": "cn_t",
-        "bundle_value": "姬夢楓",
-        "db_value": "姬夢枫"
-      },
-      {
-        "category": "STRMutator",
-        "id": 6010101,
-        "field": "jp",
-        "bundle_value": "ボスは学院長代理に固定される。魔法のティーポット、変なティーポットが撃破された後、撃破したキャラクターのステータスがランダムに変更される。\nラウンド1終了時、全てのプレイヤーは追加で[color=#ffe774]1[/color]回強化チップを選択する。",
-        "db_value": "ボスは学院長代理に固定される。魔法のティーポット、変なティーポットが撃破された後、撃破したキャラクターの属性がランダムに変更される。\nラウンド1終了時、全てのプレイヤーは追加で[color=#ffe774]1[/color]回強化チップを選択する。"
-      },
-      {
-        "category": "STRMutator",
-        "id": 6015201,
-        "field": "jp",
-        "bundle_value": "審判長エイミーはスキル【レッドカード】を獲得する：ランダムにキャラクターを1人指定して罰則を与え、そのキャラクターの攻撃力または防御力の[color=#ffe774]2[/color]を、ボスではないランダムなモンスター1体に移転する。そのモンスターが撃破された時、移転したステータスは元のキャラクターに戻る。このスキルのCTは[color=#ffe774]3[/color]ラウンド。",
-        "db_value": "審判長エイミーはスキル【レッドカード】を獲得する：ランダムにキャラクターを1人指定して罰則を与え、そのキャラクターの攻撃力または防御力の[color=#ffe774]2[/color]を、ボスではないランダムなモンスター1体に移転する。そのモンスターが撃破された時、移転した属性は元のキャラクターに戻る。このスキルのCTは[color=#ffe774]3[/color]ラウンド。"
-      },
-      {
-        "category": "STRBuff",
-        "id": 6015204,
-        "field": "jp",
-        "bundle_value": "攻撃力+2。撃破された時、罰を受けたキャラにステータスを戻す",
-        "db_value": "攻撃力+2。撃破された時、罰を受けたキャラに属性を戻す"
-      },
-      {
-        "category": "STRBuff",
-        "id": 6015205,
-        "field": "jp",
-        "bundle_value": "防御力+2。撃破された時、罰を受けたキャラにステータスを戻す",
-        "db_value": "防御力+2。撃破された時、罰を受けたキャラに属性を戻す"
-      },
-      {
-        "category": "STRSkill",
-        "id": 1061130,
-        "field": "cn_s",
-        "bundle_value": "被击倒后，给予击倒者[color=#91e1ff]1[/color]张[Astral=Card:21024][/Astral]。",
-        "db_value": "被击倒后，给予击倒者[color=#91e1ff]1[/color]张【硅基思维基质】。"
-      },
-      {
-        "category": "STRSkill",
-        "id": 1061130,
+        "category": "STRCard",
+        "id": 210101,
         "field": "en",
-        "bundle_value": "After being KO'd, the victor gains [color=#91e1ff]1[/color] [Astral=Card:21024][/Astral]",
-        "db_value": "After being KO'd, the victor gains [color=#91e1ff]1[/color] 【Silicon-Based Mind Matrix】"
-      },
-      {
-        "category": "STRSkill",
-        "id": 1061130,
-        "field": "jp",
-        "bundle_value": "撃破された後、撃破したプレイヤーに[Astral=Card:21024][/Astral]を[color=#91e1ff]1[/color]枚与える。",
-        "db_value": "撃破された後、撃破したプレイヤーに【シリコンベース思考マトリックス】を[color=#91e1ff]1[/color]枚与える。"
-      },
-      {
-        "category": "STRSkill",
-        "id": 1061130,
-        "field": "cn_t",
-        "bundle_value": "被擊倒後，給予擊倒者[color=#91e1ff]1[/color]張[Astral=Card:21024][/Astral]。",
-        "db_value": "被擊倒後，給予擊倒者[color=#91e1ff]1[/color]張【硅基思維基質】。"
+        "bundle_value": "Choose another character, deal 1 damage to them and apply 【Problem students】. Then, gain 3 Star Coins.\nAt the end of your turn, if this card is still in your hand, take 1 damage.",
+        "db_value": "Choose another character, deal 1 damage to them and apply 【Problem students】. Then, gain 3 Star Coins.\nAt the end of your turn, if this card is still in your hand, take 2 damage.\n"
       }
     ]
   },
   "db_apply": {
     "enabled": true,
-    "asset_version": "3.2.0.011",
+    "asset_version": "3.2.0.012",
     "create_count": 0,
-    "update_count": 6,
+    "update_count": 1,
     "delete_count": 0,
     "applied": true,
-    "batch_id": "e5de2350-f619-4bac-8870-952a4dfa7efb",
-    "log_count": 6,
-    "upsert_count": 6
+    "batch_id": "325e1c4f-5801-4c8e-aecb-50186812ff71",
+    "log_count": 1,
+    "upsert_count": 1
   }
 }
