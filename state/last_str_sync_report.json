@@ -1,25 +1,25 @@
 {
-  "generated_at": "2026-06-26T09:43:43Z",
+  "generated_at": "2026-06-29T11:53:59Z",
   "version": "3.2.0",
   "routes": {
     "CN_BILIBILI": {
-      "revision": "012",
-      "report_path": "output_get/CN_BILIBILI/3.2.0/012/report.json",
+      "revision": "013",
+      "report_path": "output_get/CN_BILIBILI/3.2.0/013/report.json",
       "failed_count": 0
     },
     "CN_STEAM": {
-      "revision": "012",
-      "report_path": "output_get/CN_STEAM/3.2.0/012/report.json",
+      "revision": "013",
+      "report_path": "output_get/CN_STEAM/3.2.0/013/report.json",
       "failed_count": 0
     },
     "INT_ANDROID": {
-      "revision": "012",
-      "report_path": "output_get/INT_ANDROID/3.2.0/012/report.json",
+      "revision": "013",
+      "report_path": "output_get/INT_ANDROID/3.2.0/013/report.json",
       "failed_count": 0
     },
     "INT_STEAM": {
-      "revision": "012",
-      "report_path": "output_get/INT_STEAM/3.2.0/012/report.json",
+      "revision": "013",
+      "report_path": "output_get/INT_STEAM/3.2.0/013/report.json",
       "failed_count": 0
     }
   }

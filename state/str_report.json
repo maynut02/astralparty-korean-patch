@@ -2,21 +2,21 @@
   "summary": {
     "route": "INT_STEAM",
     "version": "3.2.0",
-    "revision": "012",
+    "revision": "013",
     "scope_source": "snapshot",
     "snapshot_file": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/state/get_report.json",
-    "scope_dir": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.2.0/012",
-    "report_source": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.2.0/012/report.json",
-    "bundle_name": "b41ec69019ce38749b8a7ea64e0bdd35.bundle",
-    "bundle_path": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.2.0/012/b41ec69019ce38749b8a7ea64e0bdd35.bundle",
+    "scope_dir": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.2.0/013",
+    "report_source": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.2.0/013/report.json",
+    "bundle_name": "3e6470aa6bc00ddff2ed1fdd34371b5d.bundle",
+    "bundle_path": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.2.0/013/3e6470aa6bc00ddff2ed1fdd34371b5d.bundle",
     "asset_prefix": "STR",
     "categories_count": 59,
     "extracted_entry_count": 7087,
     "db_row_count": 7087,
     "missing_in_db_count": 0,
     "db_only_count": 0,
-    "mismatch_row_count": 1,
-    "mismatch_field_count": 1,
+    "mismatch_row_count": 0,
+    "mismatch_field_count": 0,
     "upload_db": true,
     "data_table": "astral_data",
     "logs_table": "astral_logs"
@@ -24,25 +24,17 @@
   "comparison": {
     "missing_in_db": [],
     "db_only": [],
-    "mismatches": [
-      {
-        "category": "STRCard",
-        "id": 210101,
-        "field": "en",
-        "bundle_value": "Choose another character, deal 1 damage to them and apply 【Problem students】. Then, gain 3 Star Coins.\nAt the end of your turn, if this card is still in your hand, take 1 damage.",
-        "db_value": "Choose another character, deal 1 damage to them and apply 【Problem students】. Then, gain 3 Star Coins.\nAt the end of your turn, if this card is still in your hand, take 2 damage.\n"
-      }
-    ]
+    "mismatches": []
   },
   "db_apply": {
     "enabled": true,
-    "asset_version": "3.2.0.012",
+    "asset_version": "3.2.0.013",
     "create_count": 0,
-    "update_count": 1,
+    "update_count": 0,
     "delete_count": 0,
     "applied": true,
-    "batch_id": "325e1c4f-5801-4c8e-aecb-50186812ff71",
-    "log_count": 1,
-    "upsert_count": 1
+    "batch_id": "ce67666a-7f37-4f92-a691-6f3b2a8dee4c",
+    "log_count": 0,
+    "upsert_count": 0
   }
 }
