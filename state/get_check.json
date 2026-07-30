@@ -1,40 +1,40 @@
 {
-  "checked_at": "2026-07-30T03:51:29Z",
+  "checked_at": "2026-07-30T04:01:12Z",
   "version": "3.2.0",
   "routes": {
     "INT_STEAM": {
-      "bundle_count": 0,
-      "shard_count": 0,
-      "changed": false,
+      "bundle_count": 628,
+      "shard_count": 2,
+      "changed": true,
       "version": "3.2.0",
-      "revision": "013",
-      "report_path": "output_get/INT_STEAM/3.2.0/013/report.json"
+      "revision": "113",
+      "report_path": "output_get/INT_STEAM/3.2.0/113/report.json"
     },
     "INT_ANDROID": {
-      "bundle_count": 0,
-      "shard_count": 0,
-      "changed": false,
+      "bundle_count": 5808,
+      "shard_count": 12,
+      "changed": true,
       "version": "3.2.0",
-      "revision": "013",
-      "report_path": "output_get/INT_ANDROID/3.2.0/013/report.json"
+      "revision": "113",
+      "report_path": "output_get/INT_ANDROID/3.2.0/113/report.json"
     },
     "CN_BILIBILI": {
-      "bundle_count": 0,
-      "shard_count": 0,
-      "changed": false,
+      "bundle_count": 992,
+      "shard_count": 2,
+      "changed": true,
       "version": "3.2.0",
-      "revision": "013",
-      "report_path": "output_get/CN_BILIBILI/3.2.0/013/report.json"
+      "revision": "113",
+      "report_path": "output_get/CN_BILIBILI/3.2.0/113/report.json"
     },
     "CN_STEAM": {
-      "bundle_count": 0,
-      "shard_count": 0,
-      "changed": false,
+      "bundle_count": 621,
+      "shard_count": 2,
+      "changed": true,
       "version": "3.2.0",
-      "revision": "013",
-      "report_path": "output_get/CN_STEAM/3.2.0/013/report.json"
+      "revision": "113",
+      "report_path": "output_get/CN_STEAM/3.2.0/113/report.json"
     }
   },
-  "has_changes": false,
-  "int_steam_changed": false
+  "has_changes": true,
+  "int_steam_changed": true
 }

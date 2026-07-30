@@ -1,0 +1,71 @@
+{
+  "summary": {
+    "route": "CN_BILIBILI",
+    "version": "3.2.0",
+    "source_revision": "113",
+    "run_at": "2026-07-30T04:01:38Z",
+    "source_url": "http://serescn.feimogames.com/CN_BILIBILI/3.2.0/113",
+    "current_bundle_count": 992,
+    "added_bundle_count": 992,
+    "processed_bundle_count": 992,
+    "downloaded_bundle_count": 894,
+    "exported_bundle_count": 894,
+    "matched_asset_count": 8,
+    "shard_index": 0,
+    "shard_count": 2,
+    "failed_bundles": [],
+    "skipped_bundle_count": 98,
+    "warnings": [
+      "Bundles skipped by size limit: 43",
+      "Bundles skipped by size limit: 55"
+    ],
+    "interrupted": false,
+    "catalog_diff_enabled": false,
+    "copied_reported_bundle_count": 5,
+    "copied_reported_bundles_path": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/CN_BILIBILI/3.2.0/113",
+    "bundle_copy_errors": [],
+    "report_path": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/CN_BILIBILI/3.2.0/113/report.json"
+  },
+  "records": [
+    {
+      "asset_name": "Simplified Chinese",
+      "asset_type": "TextAsset",
+      "bundle_name": "27abfecdc250d604552bb307dae4e380.bundle"
+    },
+    {
+      "asset_name": "STRCard",
+      "asset_type": "TextAsset",
+      "bundle_name": "6415543c25d0718e2c200755efc0f1b3.bundle"
+    },
+    {
+      "asset_name": "Afacad-Regular_TMP",
+      "asset_type": "MonoBehaviour",
+      "bundle_name": "contentupdate_font_tmp_assets_afacad-regular_tmp_f4dd6dcc1aa2ac5b4fb140e5c4587086.bundle"
+    },
+    {
+      "asset_name": "Afacad-Regular_TMP Atlas",
+      "asset_type": "Texture2D",
+      "bundle_name": "contentupdate_font_tmp_assets_afacad-regular_tmp_f4dd6dcc1aa2ac5b4fb140e5c4587086.bundle"
+    },
+    {
+      "asset_name": "MochiyPopOne-Regular_TMP",
+      "asset_type": "MonoBehaviour",
+      "bundle_name": "contentupdate_font_tmp_assets_mochiypopone-regular_tmp_ed932f1c68001c69b7f9f6252d868514.bundle"
+    },
+    {
+      "asset_name": "MochiyPopOne-Regular_TMP Atlas",
+      "asset_type": "Texture2D",
+      "bundle_name": "contentupdate_font_tmp_assets_mochiypopone-regular_tmp_ed932f1c68001c69b7f9f6252d868514.bundle"
+    },
+    {
+      "asset_name": "JingNanBoBoHei_TMP",
+      "asset_type": "MonoBehaviour",
+      "bundle_name": "contentupdate_font_tmp_assets_jingnanbobohei_tmp_cc33cc064c9819b081129f5bcca1e51b.bundle"
+    },
+    {
+      "asset_name": "JingNanBoBoHei_TMP Atlas",
+      "asset_type": "Texture2D",
+      "bundle_name": "contentupdate_font_tmp_assets_jingnanbobohei_tmp_cc33cc064c9819b081129f5bcca1e51b.bundle"
+    }
+  ]
+}
