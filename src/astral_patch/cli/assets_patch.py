@@ -84,6 +84,7 @@ class PatchResult:
     replaced_assets: list[str]
     status: str
     error: str
+    root_id: str = ""
 
 
 @dataclass
@@ -1366,6 +1367,7 @@ def _patch_bundle_for_task(
     try:
         env = UnityPy.load(str(bundle_path))
         assetbundle_m_name = _extract_assetbundle_m_name(env) if task.source == "AssetBundles" else ""
+        result.root_id = assetbundle_m_name
         is_str_target_bundle = bool(str_target_field) and bundle_path.name == str_bundle_name
         patched_lang_assets: set[str] = set()
 
@@ -1545,7 +1547,7 @@ def _run_single_route(
     results: list[PatchResult] = []
     skipped_sources: list[str] = []
 
-    for task in tasks:
+    for task_idx, task in enumerate(tasks):
         source_input_path = _source_input_dir(task, input_scope_dir, origin_root, route)
         if not source_input_path.exists():
             reason = _describe_task_skip_reason(task)
@@ -1564,6 +1566,7 @@ def _run_single_route(
             specific_path = source_input_path / str_bundle_name
             bundle_paths = [specific_path] if specific_path.exists() else []
 
+        task_root_ids: list[str] = []
         for bundle_path in bundle_paths:
             result = _patch_bundle_for_task(
                 bundle_path=bundle_path,
@@ -1580,6 +1583,13 @@ def _run_single_route(
                 str_prefixes=str_prefixes,
             )
             results.append(result)
+            if result.root_id and result.root_id not in task_root_ids:
+                task_root_ids.append(result.root_id)
+
+        if task.source == "AssetBundles" and task_root_ids:
+            payload_tasks = payload.get("tasks", [])
+            if isinstance(payload_tasks, list) and task_idx < len(payload_tasks) and isinstance(payload_tasks[task_idx], dict):
+                payload_tasks[task_idx]["root_id"] = task_root_ids[0]
 
     patched = sum(1 for item in results if item.status == "patched")
     skipped = sum(1 for item in results if item.status == "skipped")
@@ -1615,6 +1625,11 @@ def _run_single_route(
     }
     report_path.parent.mkdir(parents=True, exist_ok=True)
     report_path.write_text(json.dumps(report_payload, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    if not bool(args.dry_run):
+        patches_path = input_scope_dir / "patches.json"
+        patches_path.parent.mkdir(parents=True, exist_ok=True)
+        patches_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
 
     print(
         "[assets-patch] "
