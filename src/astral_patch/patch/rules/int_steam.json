@@ -22,7 +22,7 @@
       ]
     },
     {
-      "source": "StandaloneWindows64",
+      "source": "AssetBundles",
       "patches": [
         {
           "asset_kind": "MonoBehaviour",

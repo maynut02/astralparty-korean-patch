@@ -28,13 +28,13 @@ FILES_KO_DIR = Path("files_ko")
 FILES_ORIGIN_DIR = Path("files_origin")
 
 # INT_STEAM
-# http://selist.feimogames.com:7878/api/hotaddressExtend/get?route=INT_STEAM&version=3.1.0
+# http://selist.feimogames.com:7878/api/hotaddressExtend/get?route=INT_STEAM&version=3.2.0
 
 # INT_ANDROID
-# http://selist.feimogames.com:7878/api/hotaddressExtend/get?route=INT_ANDROID&version=3.1.0
+# http://selist.feimogames.com:7878/api/hotaddressExtend/get?route=INT_ANDROID&version=3.2.0
 
 # CN_STEAM(110001933)
-# http://se-web-cn.feimogames.com:7878/api/hotaddressExtend/get?route=CN_STEAM&version=3.1.0
+# http://se-web-cn.feimogames.com:7878/api/hotaddressExtend/get?route=CN_STEAM&version=3.2.0
 
 # CN_BILIBILI(110001957)
-# http://se-web-cn.feimogames.com:7878/api/hotaddressExtend/get?route=CN_BILIBILI&version=3.1.0
+# http://se-web-cn.feimogames.com:7878/api/hotaddressExtend/get?route=CN_BILIBILI&version=3.2.0
