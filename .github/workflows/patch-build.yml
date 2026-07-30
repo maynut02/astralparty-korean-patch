@@ -78,6 +78,19 @@ jobs:
             astral-patch patch
           fi
 
+      - name: Commit updated output_get data to workflow branch
+        run: |
+          set -euo pipefail
+          cd workflow-data
+          rsync -a ../output_get/ output_get/
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add output_get/
+          if ! git diff --cached --quiet; then
+            git commit -m "chore(workflow): update output_get data and patches.json"
+            git push origin workflow
+          fi
+
       - name: Upload patched data artifact
         uses: actions/upload-artifact@v6
         with:
