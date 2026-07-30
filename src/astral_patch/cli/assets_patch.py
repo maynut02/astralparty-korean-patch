@@ -1300,7 +1300,7 @@ def _collect_task_input_paths(task: TaskRule, source_input_path: Path, bundle_fi
 
 def _unity_cache_bundle_dir_name(route: str, bundle_path: Path) -> str:
     stem = bundle_path.stem
-    if route in {"CN_BILIBILI", "CN_STEAM"} and "_" in stem:
+    if "_" in stem:
         suffix = stem.rsplit("_", 1)[-1]
         if UNITY_CACHE_HASH_RE.match(suffix):
             return suffix
