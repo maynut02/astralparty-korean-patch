@@ -1,0 +1,60 @@
+{
+  "name": "cn_bilibili",
+  "patch": "吉星派对_Data",
+  "tasks": [
+    {
+      "source": "AssetBundles",
+      "patches": [
+        {
+          "action": "patch_str_from_db",
+          "target": "STR",
+          "target_field": "cn_s"
+        }
+      ],
+      "root_id": "be8a6f7fa87357b26096b5a0ada25e0b"
+    },
+    {
+      "source": "AssetBundles",
+      "patches": [
+        {
+          "action": "patch_lang_from_db",
+          "target": "Simplified Chinese"
+        }
+      ],
+      "root_id": "d708472a611c14032aa4d70e96daa433"
+    },
+    {
+      "source": "AssetBundles",
+      "patches": [
+        {
+          "asset_kind": "MonoBehaviour",
+          "asset_name": "JingNanBoBoHei_TMP",
+          "replace_file": "AstralCJK_KO_CN SDF.dat",
+          "action": "replace_file"
+        },
+        {
+          "asset_kind": "Texture2D",
+          "asset_name": "JingNanBoBoHei_TMP Atlas",
+          "replace_file": "AstralCJK_KO_CN SDF Atlas.png",
+          "action": "replace_file"
+        }
+      ],
+      "root_id": "d708472a611c14032aa4d70e96daa433"
+    },
+    {
+      "source": "StandaloneWindows64",
+      "patches": []
+    },
+    {
+      "source": "data.unity3d",
+      "patches": [
+        {
+          "asset_kind": "Font",
+          "asset_name": "JingNanBoBoHei",
+          "replace_file": "AstralCJK.ttf",
+          "action": "replace_file"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "name": "int_steam",
+  "patch": "AstralParty_INT_Data",
+  "tasks": [
+    {
+      "source": "AssetBundles",
+      "patches": [
+        {
+          "action": "patch_str_from_db",
+          "target": "STR",
+          "target_field": "en"
+        }
+      ],
+      "root_id": "f19f4b57e00618a092c8dfc8aeb8d2fa"
+    },
+    {
+      "source": "AssetBundles",
+      "patches": [
+        {
+          "action": "patch_lang_from_db",
+          "target": "English"
+        }
+      ],
+      "root_id": "d708472a611c14032aa4d70e96daa433"
+    },
+    {
+      "source": "AssetBundles",
+      "patches": [
+        {
+          "asset_kind": "MonoBehaviour",
+          "asset_name": "Afacad-Regular_TMP",
+          "replace_file": "AstralCJK_KO_EN SDF.dat",
+          "action": "replace_file"
+        },
+        {
+          "asset_kind": "Texture2D",
+          "asset_name": "Afacad-Regular_TMP Atlas",
+          "replace_file": "AstralCJK_KO_EN SDF Atlas.png",
+          "action": "replace_file"
+        }
+      ],
+      "root_id": "d708472a611c14032aa4d70e96daa433"
+    },
+    {
+      "source": "data.unity3d",
+      "patches": [
+        {
+          "asset_kind": "Font",
+          "asset_name": "Afacad-Regular",
+          "replace_file": "ONE Mobile POP.ttf",
+          "action": "replace_file"
+        }
+      ]
+    }
+  ]
+}
