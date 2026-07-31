@@ -2,21 +2,21 @@
   "summary": {
     "route": "INT_STEAM",
     "version": "3.2.0",
-    "revision": "115",
+    "revision": "116",
     "scope_source": "snapshot",
     "snapshot_file": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/state/get_report.json",
-    "scope_dir": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.2.0/115",
-    "report_source": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.2.0/115/report.json",
-    "bundle_name": "de852fb24b2d096684acce0874991a64.bundle",
-    "bundle_path": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.2.0/115/de852fb24b2d096684acce0874991a64.bundle",
+    "scope_dir": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.2.0/116",
+    "report_source": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.2.0/116/report.json",
+    "bundle_name": "3fa188d79493a8c892f953b5176c43b5.bundle",
+    "bundle_path": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.2.0/116/3fa188d79493a8c892f953b5176c43b5.bundle",
     "asset_prefix": "STR",
     "categories_count": 60,
     "extracted_entry_count": 7283,
     "db_row_count": 7283,
     "missing_in_db_count": 0,
     "db_only_count": 0,
-    "mismatch_row_count": 0,
-    "mismatch_field_count": 0,
+    "mismatch_row_count": 4,
+    "mismatch_field_count": 11,
     "upload_db": true,
     "data_table": "astral_data",
     "logs_table": "astral_logs"
@@ -24,17 +24,95 @@
   "comparison": {
     "missing_in_db": [],
     "db_only": [],
-    "mismatches": []
+    "mismatches": [
+      {
+        "category": "STRSkill",
+        "id": 129020,
+        "field": "cn_s",
+        "bundle_value": "选定4格内的一个地块，生成[color=#91e1ff]1[/color]个魔渊触须，并将该地块[color=#91e1ff]2[/color]格内的所有地块临时转化为魔渊区域。随后，激活魔渊区域内的所有魔渊触须。\n魔渊区域：对以任何形式进入魔渊区域的怪物施加下次移动速度[color=#FF4646]-2[/color]。魔渊区域在赛克斯回合开始时消失。",
+        "db_value": "选定4格内的一个地块，生成[color=#91e1ff]1[/color]个魔渊触须，并将该地块[color=#91e1ff]2[/color]格内的所有地块临时转化为魔渊区域。随后，激活魔渊区域内的所有魔渊触须。\n魔渊区域：对以任何形式进入魔渊区域的怪物施加下次移动速度[color=#FF4646]-2[/color]。魔渊区域在赛克斯回合开始时消失。\n"
+      },
+      {
+        "category": "STRItem",
+        "id": 76129,
+        "field": "cn_s",
+        "bundle_value": "背景：一同分享-赛克斯",
+        "db_value": "背景：一同分享"
+      },
+      {
+        "category": "STRItem",
+        "id": 76129,
+        "field": "en",
+        "bundle_value": "Background - Sharing Together - Sykes",
+        "db_value": "Background - Sharing Together"
+      },
+      {
+        "category": "STRItem",
+        "id": 76129,
+        "field": "jp",
+        "bundle_value": "回想ロビー：シェアタイム-サイクス",
+        "db_value": "回想ロビー：シェアタイム"
+      },
+      {
+        "category": "STRItem",
+        "id": 76129,
+        "field": "cn_t",
+        "bundle_value": "背景：一同分享-賽克斯",
+        "db_value": "背景：一同分享"
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 350211,
+        "field": "en",
+        "bundle_value": "The Security Officer arrives at the scene of the crime.",
+        "db_value": "1"
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 350211,
+        "field": "jp",
+        "bundle_value": "学院戒厳官登場",
+        "db_value": "1"
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 350211,
+        "field": "cn_t",
+        "bundle_value": "學院安全官登場",
+        "db_value": "1"
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 350511,
+        "field": "en",
+        "bundle_value": "Amakawa Souri appears.",
+        "db_value": "1"
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 350511,
+        "field": "jp",
+        "bundle_value": "天川蒼鯉登場",
+        "db_value": "1"
+      },
+      {
+        "category": "STRMapEvent",
+        "id": 350511,
+        "field": "cn_t",
+        "bundle_value": "天川蒼鯉登場",
+        "db_value": "1"
+      }
+    ]
   },
   "db_apply": {
     "enabled": true,
-    "asset_version": "3.2.0.115",
+    "asset_version": "3.2.0.116",
     "create_count": 0,
-    "update_count": 0,
+    "update_count": 4,
     "delete_count": 0,
     "applied": true,
-    "batch_id": "25f2e08d-e140-4281-83f8-c5334c28a070",
-    "log_count": 0,
-    "upsert_count": 0
+    "batch_id": "ee15c057-efbe-4c05-a897-706b16145af1",
+    "log_count": 4,
+    "upsert_count": 4
   }
 }

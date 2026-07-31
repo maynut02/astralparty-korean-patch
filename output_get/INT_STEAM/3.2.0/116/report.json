@@ -1,0 +1,86 @@
+{
+  "summary": {
+    "route": "INT_STEAM",
+    "version": "3.2.0",
+    "source_revision": "116",
+    "run_at": "2026-07-31T09:11:10Z",
+    "source_url": "http://seresjp.feimogames.com/INT_STEAM/3.2.0/116",
+    "current_bundle_count": 643,
+    "added_bundle_count": 643,
+    "processed_bundle_count": 643,
+    "downloaded_bundle_count": 544,
+    "exported_bundle_count": 544,
+    "matched_asset_count": 11,
+    "shard_index": 0,
+    "shard_count": 2,
+    "failed_bundles": [],
+    "skipped_bundle_count": 99,
+    "warnings": [
+      "Bundles skipped by size limit: 52",
+      "Bundles skipped by size limit: 47"
+    ],
+    "interrupted": false,
+    "catalog_diff_enabled": false,
+    "copied_reported_bundle_count": 8,
+    "copied_reported_bundles_path": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.2.0/116",
+    "bundle_copy_errors": [],
+    "report_path": "/home/runner/work/astralparty-korean-patch/astralparty-korean-patch/output_get/INT_STEAM/3.2.0/116/report.json"
+  },
+  "records": [
+    {
+      "asset_name": "Simplified Chinese",
+      "asset_type": "TextAsset",
+      "bundle_name": "27abfecdc250d604552bb307dae4e380.bundle"
+    },
+    {
+      "asset_name": "Afacad-Regular_TMP",
+      "asset_type": "MonoBehaviour",
+      "bundle_name": "contentupdate_font_tmp_assets_afacad-regular_tmp_5a29bbfc5562df97bcb56dab9fe5afee.bundle"
+    },
+    {
+      "asset_name": "Afacad-Regular_TMP Atlas",
+      "asset_type": "Texture2D",
+      "bundle_name": "contentupdate_font_tmp_assets_afacad-regular_tmp_5a29bbfc5562df97bcb56dab9fe5afee.bundle"
+    },
+    {
+      "asset_name": "MochiyPopOne-Regular_TMP",
+      "asset_type": "MonoBehaviour",
+      "bundle_name": "contentupdate_font_tmp_assets_mochiypopone-regular_tmp_7f3e90ff840942ef8420fb0c0b3b1ca6.bundle"
+    },
+    {
+      "asset_name": "MochiyPopOne-Regular_TMP Atlas",
+      "asset_type": "Texture2D",
+      "bundle_name": "contentupdate_font_tmp_assets_mochiypopone-regular_tmp_7f3e90ff840942ef8420fb0c0b3b1ca6.bundle"
+    },
+    {
+      "asset_name": "Japanese",
+      "asset_type": "TextAsset",
+      "bundle_name": "eb3407eb09651ca310ee6e7aeb1fda1c.bundle"
+    },
+    {
+      "asset_name": "JingNanBoBoHei_TMP",
+      "asset_type": "MonoBehaviour",
+      "bundle_name": "contentupdate_font_tmp_assets_jingnanbobohei_tmp_6b8533f93ecb2de2004cc93a01390704.bundle"
+    },
+    {
+      "asset_name": "JingNanBoBoHei_TMP Atlas",
+      "asset_type": "Texture2D",
+      "bundle_name": "contentupdate_font_tmp_assets_jingnanbobohei_tmp_6b8533f93ecb2de2004cc93a01390704.bundle"
+    },
+    {
+      "asset_name": "STRCard",
+      "asset_type": "TextAsset",
+      "bundle_name": "3fa188d79493a8c892f953b5176c43b5.bundle"
+    },
+    {
+      "asset_name": "Traditional Chinese",
+      "asset_type": "TextAsset",
+      "bundle_name": "bbdbb54b0407ee220b846014d45c8fcb.bundle"
+    },
+    {
+      "asset_name": "English",
+      "asset_type": "TextAsset",
+      "bundle_name": "c46f44479ac51ea2599b923ef9727291.bundle"
+    }
+  ]
+}
